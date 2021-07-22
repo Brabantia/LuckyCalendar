@@ -101,7 +101,7 @@ gets added).
 "C:\Program Files\Java\jdk1.8.0_161\bin\javac.exe" -d TestOutput -classpath "Source;TestSource" TestSource\*.java
 ```
 ```
-"C:\Program Files\Java\jdk1.8.0_161\bin\java.exe" -cp "TestOutput" AllTets
+"C:\Program Files\Java\jdk1.8.0_161\bin\java.exe" -cp "TestOutput" AllTests
 ```
 or
 ```
@@ -114,7 +114,7 @@ or
 "javac" -d TestOutput -classpath "Source;TestSource" TestSource/*.java
 ```
 ```
-java" -cp "TestOutput" AllTets
+java" -cp "TestOutput" AllTests
 ```
 or
 ```
