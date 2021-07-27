@@ -1,10 +1,10 @@
 /**
  *	@(#)FrameView.java
  *
- *	@author Yorick van de Water
+ *	@author Yorick van de Water, Shyam Vyas
  *	@version 1.00 2021/7/17
 **/
-
+package project151;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.*;
@@ -23,7 +23,8 @@ public class FrameView extends JFrame {
 	private final JButton[] viewButtons;
 	private CalendarView currentView;
 	private Controller controller;
-
+	LocalDate ld= LocalDate.now();
+	JPanel overviewPanel;
 	public FrameView() {
 		this.miniCal = new MiniCalendarView(this);
 		this.agenda = new AgendaView(this);
@@ -36,11 +37,39 @@ public class FrameView extends JFrame {
 		JPanel monthButtonPanel = new JPanel();
 		JPanel viewButtonPanel = new JPanel();
 		JPanel eventButtonPanel = new JPanel();
-		JPanel overviewPanel = new JPanel();
+		overviewPanel = new JPanel();
 		JPanel eventViewPanel = new JPanel();
-
+		
+		this.leftButton.addActionListener(ActionEvent -> {
+			miniCal.setLocalDate(miniCal.getLocalDate().minusMonths(1));
+			overviewPanel.remove(MiniCalendarView.jl);
+			overviewPanel.revalidate();
+			overviewPanel.repaint();
+			overviewPanel.add(miniCal.getView(), BorderLayout.SOUTH);
+			overviewPanel.repaint();
+		});
+		leftButton.setBackground(Color.WHITE);
+		this.rightButton.addActionListener(ActionEvent -> {
+			miniCal.setLocalDate(miniCal.getLocalDate().plusMonths(1));
+			overviewPanel.remove(MiniCalendarView.jl);
+			overviewPanel.revalidate();
+			overviewPanel.repaint();
+			overviewPanel.add(miniCal.getView(), BorderLayout.SOUTH);
+			overviewPanel.repaint();
+		});
+		rightButton.setBackground(Color.WHITE);
+		this.todayButton.addActionListener(ActionEvent -> {
+			miniCal.setLocalDate(LocalDate.now());
+			overviewPanel.remove(MiniCalendarView.jl);
+			overviewPanel.revalidate();
+			overviewPanel.repaint();
+			overviewPanel.add(miniCal.getView(), BorderLayout.SOUTH);
+			overviewPanel.repaint();
+		});
+		todayButton.setBackground(Color.white);
 		monthButtonPanel.add(this.todayButton);
 		monthButtonPanel.add(this.leftButton);
+		
 		monthButtonPanel.add(this.rightButton);
 
 		viewButtons = new JButton[this.views.length];
@@ -60,6 +89,7 @@ public class FrameView extends JFrame {
 		overviewPanel.setLayout(new BorderLayout());
 		overviewPanel.add(eventButtonPanel, BorderLayout.NORTH);
 		overviewPanel.add(monthButtonPanel, BorderLayout.CENTER);
+		
 		overviewPanel.add(miniCal.getView(), BorderLayout.SOUTH);
 
 		eventViewPanel.setLayout(new BorderLayout());
@@ -80,6 +110,7 @@ public class FrameView extends JFrame {
       setTitle("Calendar");
 		pack();
       setResizable(false);
+      
 	}
 
 	private void exit() {
