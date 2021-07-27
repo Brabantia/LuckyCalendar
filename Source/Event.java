@@ -108,8 +108,6 @@ public class Event {
 	 * Returns a String encoding of this Event suitable for saving to file and
 	 * being restored from.
 	 * @return a String encoding of this Event
-	 *
-	 * Sample: "Math Class";2014;1;2;MWF;17;18;
 	**/
 	public String encode() {
 		String text = "Event;";

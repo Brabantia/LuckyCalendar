@@ -77,7 +77,7 @@ public class TimeInterval implements Comparable<TimeInterval> {
 	/**
 	 *	Returns a String representation of this TimeInterval
 	 *	@return a String representation of this TimeInterval
-	 * @Override
+	 *	@Override
 	**/
 	public String toString() {
 		return this.startTime.format(FORMATTER) + " - " + this.endTime.format(FORMATTER);
