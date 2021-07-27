@@ -36,7 +36,7 @@ public class Event {
 	 * @param time - the time during which this event takes place
 	**/
 	public Event(String name, LocalDate date, TimeInterval time) {
-		this(name, "", "", true, time, date, new String[0]);
+		this(name, "", "", true, time, date);
 	}
 
 	public Event(String name, String description, String location, boolean isAvailable, TimeInterval time, LocalDate date, String... attendees) {
@@ -57,19 +57,19 @@ public class Event {
 	}
 
 	public String getDescription() {
-		return "";
+		return this.description;
 	}
 
 	public String getLocation() {
-		return "";
+		return this.location;
 	}
 
 	public String[] getAttendees() {
-		return null;
+		return this.attendees;
 	}
 
 	public boolean isAvailable() {
-		return false;
+		return this.isAvailable;
 	}
 	/**
 	 * Returns the TimeInterval of this Event
@@ -108,9 +108,22 @@ public class Event {
 	 * Returns a String encoding of this Event suitable for saving to file and
 	 * being restored from.
 	 * @return a String encoding of this Event
+	 *
+	 * Sample: "Math Class";2014;1;2;MWF;17;18;
 	**/
 	public String encode() {
-		return null;
+		String text = "Event;";
+		text += "\"" + this.name + "\";";
+		text += "\"" + this.description + "\";";
+		text += this.isAvailable + ";";
+		text += this.date.format(FORMATTER) + ";";
+		text += this.time.encode() + ";";
+		text += this.location + ";";
+		for (String attendee : this.attendees) {
+			text += attendee + ",";
+		}
+		text += ";";
+		return text;
 	}
 	/**
 	 * Returns a String representation of this Event
@@ -124,7 +137,24 @@ public class Event {
 	 * Returns an Event decoded from two strings in a saved file.
 	 * @return an Event decoded from two strings.
 	**/
-	public static Event decode(String line1, String line2) {
-		return null;
+	public static Event decode(String line) {
+		if(line.startsWith("RecurringEvent")) {
+			return RecurringEvent.decode(line);
+		}
+		String[] vars = line.split("\"");
+		String name = vars[1];
+		String description = vars[3];
+
+		vars = vars[4].split(";");
+		boolean isAvailable = Boolean.parseBoolean(vars[1]);
+		LocalDate date = LocalDate.parse(vars[2], FORMATTER);
+		TimeInterval time = TimeInterval.decode(vars[3]);
+		String location = vars[4];
+
+		String[] attendees = vars[5].split(",");
+		if(attendees.length == 1 && attendees[0].equals("")) {
+			return new Event(name, description, location, isAvailable, time, date);
+		}
+		return new Event(name, description, location, isAvailable, time, date, attendees);
 	}
 }

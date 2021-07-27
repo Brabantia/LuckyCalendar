@@ -8,6 +8,7 @@
 import java.time.*;
 
 public class Controller {
+	public static final String OUTPUT_FILE = "output.txt";
 	private final CalendarModel model;
 	private final FrameView frame;
 	private final EventFilter[] filters;
@@ -27,7 +28,12 @@ public class Controller {
 	}
 
 	public void exit() {
-		this.model.saveToFile("");
+		try{
+			this.model.saveToFile(OUTPUT_FILE);
+		} catch(Exception e) {
+			System.err.println("Failed to save file: " + OUTPUT_FILE);
+			e.printStackTrace();
+		}
 		System.exit(0);
 	}
 

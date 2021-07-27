@@ -21,8 +21,8 @@ public class RecurringEvent extends Event {
 	**/
 	public RecurringEvent(String name, String date, TimeInterval time, String end, String days) {
 		super(name, date, time);
-		this.start = LocalDate.parse(date, super.FORMATTER);
-		this.end = LocalDate.parse(end, super.FORMATTER);
+		this.start = LocalDate.parse(date, Event.FORMATTER);
+		this.end = LocalDate.parse(end, Event.FORMATTER);
 		this.days = daysOfWeek(days);
 	}
 	/**
@@ -33,8 +33,8 @@ public class RecurringEvent extends Event {
 	 *	@param end - the time at which this RecurringEvent ends
 	 *	@param days - the days on which this RecurringEvent occurs
 	**/
-	public RecurringEvent(String name, LocalDate date, TimeInterval time, LocalDate end, DayOfWeek... days) {
-		super(name, date, time);
+	public RecurringEvent(String name, String description, String location, boolean isAvailable, LocalDate date, TimeInterval time, LocalDate end, DayOfWeek[] days, String... attendees) {
+		super(name, description, location, isAvailable, time, date, attendees);
 		this.start = date;
 		this.end = end;
 		this.days = days;
@@ -43,8 +43,8 @@ public class RecurringEvent extends Event {
 	 *	Checks if this RecurringEvent occurs on the specified date
 	 *	@param date - to check for occurrence
 	 *	@return whether this RecurringEvent happens on the specified date
+	 * @Override
 	**/
-	@Override
 	public boolean occursOn(LocalDate date) {
 		if (this.start.isAfter(date) || this.end.isBefore(date)) {
 			return false;
@@ -62,8 +62,8 @@ public class RecurringEvent extends Event {
 	 *	Checks for a time conflict with another Event
 	 *	@param other - Event to check against for a time conflict
 	 *	@return whether there is a time conflict with the other Event
+	 * @Override
 	**/
-	@Override
 	public boolean conflicts(Event other) {
 		// We only know how to check against other recurring events.
 		if (!(other instanceof RecurringEvent)) {
@@ -112,16 +112,29 @@ public class RecurringEvent extends Event {
 	 *	Returns a String encoding of this RecurringEvent suitable for saving to
 	 *	file and being restored from.
 	 *	@return a String encoding of this RecurringEvent
+	 * @Override
 	**/
-	@Override
 	public String encode() {
-		return null;
+		String text = "RecurringEvent;";
+		text += "\"" + super.getName() + "\";";
+		text += "\"" + super.getDescription() + "\";";
+		text += super.isAvailable() + ";";
+		text += this.start.format(FORMATTER) + ";";
+		text += this.end.format(FORMATTER) + ";";
+		text += RecurringEvent.daysOfWeek(this.days) + ";";
+		text += super.getTime().encode() + ";";
+		text += super.getLocation() + ";";
+		for (String attendee : super.getAttendees()) {
+			text += attendee + ",";
+		}
+		text += ";";
+		return text;
 	}
 	/**
 	 *	Returns a String representation of this RecurringEvent
 	 *	@return a String representation of this RecurringEvent
+	 * @Override
 	**/
-	@Override
 	public String toString() {
 		String text = super.getName() + "\n" + daysOfWeek(this.days) + " " + this.getTime();
 
@@ -254,7 +267,23 @@ public class RecurringEvent extends Event {
 	 *	Returns an RecurringEvent decoded from two strings in a saved file.
 	 *	@return an RecurringEvent decoded from two strings.
 	**/
-	public static Event decode(String line1, String line2) {
-		return null;
+	public static Event decode(String line) {
+		String[] vars = line.split("\"");
+		String name = vars[1];
+		String description = vars[3];
+
+		vars = vars[4].split(";");
+		boolean isAvailable = Boolean.parseBoolean(vars[1]);
+		LocalDate start = LocalDate.parse(vars[2], FORMATTER);
+		LocalDate end = LocalDate.parse(vars[3], FORMATTER);
+		DayOfWeek[] days = daysOfWeek(vars[4]);
+		TimeInterval time = TimeInterval.decode(vars[5]);
+		String location = vars[6];
+
+		String[] attendees = vars[7].split(",");
+		if(attendees.length == 1 && attendees[0].equals("")) {
+			return new RecurringEvent(name, description, location, isAvailable, start, time, end, days);
+		}
+		return new RecurringEvent(name, description, location, isAvailable, start, time, end, days, attendees);
 	}
 }
