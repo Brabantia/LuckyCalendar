@@ -1,56 +1,29 @@
 /**
- *	@(#)TimeInterval.java
+ *	@(#)WeeklyView.java
  *
  *	@author Yorick van de Water
  *	@version 1.00 2021/7/17
 **/
-package project151;
-import java.time.*;
 
-public class TimeInterval {
-	/**
-	 *	Initializes this TimeInterval with String representations of the start and end time
-	 *	@param startTime - starting time to set for this interval
-	 *	@param endTime - ending time to set for this interval
-	**/
-	public TimeInterval(String startTime, String endTime) {
+import javax.swing.*;
+
+public class WeeklyView implements CalendarView {
+	private final FrameView frame;
+	private Controller controller;
+
+	public WeeklyView(FrameView frame) {
+		this.frame = frame;
 	}
-	/**
-	 *	Initializes this TimeInterval with the start and end time as LocalTime objects
-	 *	@param startTime - starting time to set for this interval
-	 *	@param endTime - ending time to set for this interval
-	**/
-	public TimeInterval(LocalTime startTime, LocalTime endTime) {
+		
+	public String getLabel() {
+		return "Week";
 	}
-	/**
-	 *	Checks if this TimeInterval conflicts with the other TimeInterval
-	 *	@param other TimeInterval to check for overlap
-	 *	@return a boolean of whether this TimeInterval conflicts with the other
-	**/
-	public boolean conflicts(TimeInterval other) {
-		return false;
+		
+	public JComponent getView() {
+		return new JLabel(new ImageIcon(getClass().getResource("Weekly.png")));
 	}
-	/**
-	 *	Returns a String encoding of this TimeInterval suitable for saving to file
-	 *	and being restored from.
-	 *	@return a String encoding of this TimeInterval
-	**/
-	public String encode() {
-		return null;
-	}
-	/**
-	 *	Returns a String representation of this TimeInterval
-	 *	@return a String representation of this TimeInterval
-	**/
-	@Override
-	public String toString() {
-		return null;
-	}
-	/**
-	 *	Returns an TimeInterval decoded from two strings in a saved file.
-	 *	@return an TimeInterval decoded from two strings.
-	**/
-	public static TimeInterval decode(String input) {
-		return null;
+
+	public void attach(Controller controller) {
+		this.controller = controller;
 	}
 }
