@@ -47,26 +47,30 @@ public class MiniCalendarView extends JPanel {
 		panel.add(new JLabel("Th"));
 		panel.add(new JLabel("Fr"));
 		panel.add(new JLabel("Sa"));
-		
+
 		int counter = 0;
 		while (counter++ < day.getDayOfWeek().getValue() % 7) {
 			panel.add(new JLabel());
 		}
-		
-		for (int dayCounter = 1; dayCounter <= maxDay; ++dayCounter) {
-			JButton jb= new JButton(Integer.toString(dayCounter));
-			panel.add(jb);
 
-			if(day.equals(now)) {
-				jb.setBackground(Color.GRAY);
-			} else if (day.equals(this.date)) {
-				jb.setBackground(Color.YELLOW);
+		for (int dayCounter = 1; dayCounter <= maxDay; ++dayCounter) {
+			JButton button= new JButton(Integer.toString(dayCounter));
+			button.addActionListener(event -> {
+				controller.setDate(LocalDate.of(this.date.getYear(), this.date.getMonth(), Integer.parseInt(event.getActionCommand())));
+			});
+
+			if (day.isEqual(now)) {
+				button.setBackground(Color.GRAY);
+			} else if (day.isEqual(this.date)) {
+				button.setBackground(Color.YELLOW);
 			} else {
-				jb.setBackground(Color.WHITE);
+				button.setBackground(Color.WHITE);
 			}
-			day.plusDays(1);
+			day = day.plusDays(1);
+
+			panel.add(button);
 		}
-		
+
 		counter += maxDay;
 		while(counter++ <= 42) {
 			panel.add(new JLabel());

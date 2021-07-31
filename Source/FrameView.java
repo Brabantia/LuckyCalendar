@@ -52,23 +52,14 @@ public class FrameView extends JFrame {
 		monthButtonPanel.add(this.leftButton);
 		monthButtonPanel.add(this.todayButton);
 		monthButtonPanel.add(this.rightButton);
-		rightButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				nextMonth();
-			}
+		rightButton.addActionListener(event -> {
+			nextMonth();
 		});
-		leftButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				previousMonth();
-			}
+		leftButton.addActionListener(event -> {
+			previousMonth();
 		});
-		todayButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setDate(LocalDate.now());
-			}
+		todayButton.addActionListener(event -> {
+			setDate(LocalDate.now());
 		});
 		viewButtons = new JButton[this.views.length];
 		for (int a = 0; a < this.views.length; ++a) {
@@ -89,11 +80,8 @@ public class FrameView extends JFrame {
 				createEvent();
 			}
 		});
-		fromFileButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				loadFile();
-			}
+		fromFileButton.addActionListener(event -> {
+			loadFile();
 		});
 
 		overviewPanel.setLayout(new BorderLayout());
