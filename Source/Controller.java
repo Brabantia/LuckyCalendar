@@ -5,6 +5,7 @@
  *	@version 1.00 2021/7/30
 **/
 
+import java.net.URI;
 import java.time.LocalDate;
 
 public class Controller {
@@ -37,7 +38,8 @@ public class Controller {
 		System.exit(0);
 	}
 
-	public void addEventsFromFile(String path) {
+	public boolean addEventsFromFile(URI uri) {
+		return model.addFromFile(uri);
 	}
 
 	/**

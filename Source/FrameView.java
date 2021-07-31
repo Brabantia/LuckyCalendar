@@ -7,12 +7,15 @@
 
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 
 public class FrameView extends JFrame {
@@ -77,7 +80,7 @@ public class FrameView extends JFrame {
 			});
 		}
 
-		eventButtonPanel.add(new JLabel(new ImageIcon(getClass().getResource("/Icon.png"))));
+		eventButtonPanel.add(new JLabel(new ImageIcon(getClass().getResource("Icon.png"))));
 		eventButtonPanel.add(this.createButton);
 		eventButtonPanel.add(this.fromFileButton);
 
@@ -151,12 +154,24 @@ public class FrameView extends JFrame {
 	}
 
 	private void loadFile() {
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.showOpenDialog(this);
-		File file = fileChooser.getSelectedFile();
-		if(file != null) {
-			this.controller.addEventsFromFile(file.getAbsolutePath());
-			JOptionPane.showMessageDialog(null, "Import file success!");
+		JFileChooser chooser = new JFileChooser();
+		// Set chooser to current working directory.
+		chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+		chooser.setFileFilter(new FileNameExtensionFilter("Text Files", "txt"));
+
+		if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+			return;
+		}
+
+		File file = chooser.getSelectedFile();
+		if (file == null) {
+			JOptionPane.showMessageDialog(this, "No file selected");
+			return;
+		}
+		if (this.controller.addEventsFromFile(file.toURI())) {
+			JOptionPane.showMessageDialog(this, "Successfully imported events from file");
+		} else {
+			JOptionPane.showMessageDialog(this, "Failure to load or parse events from file");
 		}
 	}
 
