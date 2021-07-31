@@ -1,18 +1,21 @@
 /**
  *	@(#)DailyView.java
  *
- *	@author Yorick van de Water
- *	@version 1.00 2021/7/17
+ *	@author Bingzhen Chen
+ *	@version 1.00 2021/7/28
 **/
-package project151;
-import javax.swing.*;
 
-public class DailyView implements CalendarView {
-	private final FrameView frame;
+import java.awt.Dimension;
+import java.time.LocalDate;
+import javax.swing.JComponent;
+import javax.swing.JTextPane;
+
+public class DailyView extends JTextPane implements CalendarView {
 	private Controller controller;
 
-	public DailyView(FrameView frame) {
-		this.frame = frame;
+	public DailyView() {
+		super();
+		setPreferredSize(new Dimension(430,300));
 	}
 
 	public String getLabel() {
@@ -20,10 +23,18 @@ public class DailyView implements CalendarView {
 	}
 
 	public JComponent getView() {
-		return new JLabel(new ImageIcon(getClass().getResource("Daily.png")));
+		return this;
 	}
 
 	public void attach(Controller controller) {
 		this.controller = controller;
 	}
+
+	public void setDate(LocalDate date) {
+        String text = "";
+        for (Event e : this.controller.getDayEvents(date)) {
+            text += e + "\n";
+        }
+        super.setText(text);
+    }
 }

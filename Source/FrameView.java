@@ -1,14 +1,21 @@
 /**
  *	@(#)FrameView.java
  *
- *	@author Yorick van de Water, Shyam Vyas
- *	@version 1.00 2021/7/17
+ *	@author Yorick van de Water
+ *	@version 1.00 2021/7/31
 **/
-package project151;
-import java.awt.*;
-import java.awt.event.*;
-import java.time.*;
+
+
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.time.LocalDate;
 
 public class FrameView extends JFrame {
 	private final MiniCalendarView miniCal;
@@ -23,55 +30,37 @@ public class FrameView extends JFrame {
 	private final JButton[] viewButtons;
 	private CalendarView currentView;
 	private Controller controller;
-	LocalDate ld= LocalDate.now();
-	JPanel overviewPanel;
+	private LocalDate date;
+
 	public FrameView() {
-		this.miniCal = new MiniCalendarView(this);
-		this.agenda = new AgendaView(this);
+		this.date = LocalDate.now();
+		this.miniCal = new MiniCalendarView();
+		this.agenda = new AgendaView();
 		this.views = new CalendarView[] {
-			new DailyView(this), new WeeklyView(this), new MonthlyView(this), this.agenda
+			new DailyView(), new WeeklyView(), new MonthlyView(), this.agenda
 		};
+
 		this.currentView = this.views[0];
-		this.viewPanel.add(this.currentView.getView());
+		this.viewPanel.add(new JScrollPane(this.currentView.getView()));
 
 		JPanel monthButtonPanel = new JPanel();
 		JPanel viewButtonPanel = new JPanel();
 		JPanel eventButtonPanel = new JPanel();
-		overviewPanel = new JPanel();
+		JPanel overviewPanel = new JPanel();
 		JPanel eventViewPanel = new JPanel();
-		
-		this.leftButton.addActionListener(ActionEvent -> {
-			miniCal.setLocalDate(miniCal.getLocalDate().minusMonths(1));
-			overviewPanel.remove(MiniCalendarView.jl);
-			overviewPanel.revalidate();
-			overviewPanel.repaint();
-			overviewPanel.add(miniCal.getView(), BorderLayout.SOUTH);
-			overviewPanel.repaint();
-		});
-		leftButton.setBackground(Color.WHITE);
-		this.rightButton.addActionListener(ActionEvent -> {
-			miniCal.setLocalDate(miniCal.getLocalDate().plusMonths(1));
-			overviewPanel.remove(MiniCalendarView.jl);
-			overviewPanel.revalidate();
-			overviewPanel.repaint();
-			overviewPanel.add(miniCal.getView(), BorderLayout.SOUTH);
-			overviewPanel.repaint();
-		});
-		rightButton.setBackground(Color.WHITE);
-		this.todayButton.addActionListener(ActionEvent -> {
-			miniCal.setLocalDate(LocalDate.now());
-			overviewPanel.remove(MiniCalendarView.jl);
-			overviewPanel.revalidate();
-			overviewPanel.repaint();
-			overviewPanel.add(miniCal.getView(), BorderLayout.SOUTH);
-			overviewPanel.repaint();
-		});
-		todayButton.setBackground(Color.white);
-		monthButtonPanel.add(this.todayButton);
-		monthButtonPanel.add(this.leftButton);
-		
-		monthButtonPanel.add(this.rightButton);
 
+		monthButtonPanel.add(this.leftButton);
+		monthButtonPanel.add(this.todayButton);
+		monthButtonPanel.add(this.rightButton);
+		rightButton.addActionListener(event -> {
+			nextMonth();
+		});
+		leftButton.addActionListener(event -> {
+			previousMonth();
+		});
+		todayButton.addActionListener(event -> {
+			setDate(LocalDate.now());
+		});
 		viewButtons = new JButton[this.views.length];
 		for (int a = 0; a < this.views.length; ++a) {
 			viewButtons[a] = new JButton(this.views[a].getLabel());
@@ -79,17 +68,25 @@ public class FrameView extends JFrame {
 			viewButtons[a].addActionListener(event -> {
 				setView(event.getActionCommand());
 			});
-
 		}
 
 		eventButtonPanel.add(new JLabel(new ImageIcon(getClass().getResource("Icon.png"))));
 		eventButtonPanel.add(this.createButton);
 		eventButtonPanel.add(this.fromFileButton);
 
+		createButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				createEvent();
+			}
+		});
+		fromFileButton.addActionListener(event -> {
+			loadFile();
+		});
+
 		overviewPanel.setLayout(new BorderLayout());
 		overviewPanel.add(eventButtonPanel, BorderLayout.NORTH);
 		overviewPanel.add(monthButtonPanel, BorderLayout.CENTER);
-		
 		overviewPanel.add(miniCal.getView(), BorderLayout.SOUTH);
 
 		eventViewPanel.setLayout(new BorderLayout());
@@ -107,14 +104,62 @@ public class FrameView extends JFrame {
 			}
 		});
 
-      setTitle("Calendar");
+		setTitle("Calendar");
 		pack();
-      setResizable(false);
-      
+		setResizable(false);
 	}
 
 	private void exit() {
 		this.controller.exit();
+	}
+
+	private void nextMonth() {
+		setDate(this.date.plusMonths(1));
+	}
+
+	private void previousMonth() {
+		setDate(this.date.minusMonths(1));
+	}
+
+	private void createEvent() {
+		String name = JOptionPane.showInputDialog("Enter the date name");
+		if (name == null) {
+			return;
+		}
+		String date = JOptionPane.showInputDialog("Enter the date [mm/dd/yyyy]");
+		String startTime = JOptionPane.showInputDialog("Enter the start time [HH:mm]");
+		String endTime = JOptionPane.showInputDialog("Enter the end time [HH:mm]");
+		TimeInterval timeInterval = new TimeInterval(startTime, endTime);
+		Event event = new Event(name, date, timeInterval);
+
+		Event conflict = this.controller.createEvent(event);
+		if (conflict == null) {
+			JOptionPane.showMessageDialog(null, "Add Success!");
+		} else {
+			JOptionPane.showMessageDialog(null, "There's a conflicting event: " + conflict);
+		}
+	}
+
+	private void loadFile() {
+		JFileChooser chooser = new JFileChooser();
+		// Set chooser to current working directory.
+		chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+		chooser.setFileFilter(new FileNameExtensionFilter("Text Files", "txt"));
+
+		if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+			return;
+		}
+
+		File file = chooser.getSelectedFile();
+		if (file == null) {
+			JOptionPane.showMessageDialog(this, "No file selected");
+			return;
+		}
+		if (this.controller.addEventsFromFile(file.getAbsolutePath())) {
+			JOptionPane.showMessageDialog(this, "Successfully imported events from file");
+		} else {
+			JOptionPane.showMessageDialog(this, "Failure to load or parse events from file");
+		}
 	}
 
 	public void attach(Controller controller) {
@@ -126,6 +171,7 @@ public class FrameView extends JFrame {
 	}
 
 	public void display() {
+		refreshData();
 		setVisible(true);
 	}
 
@@ -134,12 +180,18 @@ public class FrameView extends JFrame {
 	}
 
 	public void refreshData() {
+		setDate(this.date);
 	}
 
 	/**
 	 *	Set the view to the specified date. Can be called by the other views.
 	**/
 	public void setDate(LocalDate date) {
+		this.date = date;
+		this.miniCal.setDate(date);
+		for (CalendarView view : this.views) {
+			view.setDate(date);
+		}
 	}
 
 	public void setView(String name) {
@@ -149,7 +201,7 @@ public class FrameView extends JFrame {
 			if (name.equals(view.getLabel())) {
 				this.viewPanel.removeAll();
 				this.currentView = view;
-				this.viewPanel.add(this.currentView.getView());
+				this.viewPanel.add(new JScrollPane(this.currentView.getView()));
 				this.viewPanel.revalidate();
 			}
 		}

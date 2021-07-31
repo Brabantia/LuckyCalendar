@@ -1,5 +1,8 @@
+Source/*.class
+TestSource/*.class
 Output/*
 TestOutput/*
+output.txt
 
 # macOS
 .DS_Store
