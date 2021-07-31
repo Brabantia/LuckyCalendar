@@ -24,7 +24,7 @@ public class DayOnlyFilter implements EventFilter {
 	public Event[] filter(Event[] events) {
 		List<Event> filtered = Arrays.asList(events).stream()
 			.filter(e -> e.occursOn(date)).collect(Collectors.toList());
-		
+
 		Event[] results = new Event[filtered.size()];
 		return filtered.toArray(results);
 	}

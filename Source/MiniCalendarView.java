@@ -20,7 +20,7 @@ public class MiniCalendarView extends JPanel {
 	private static HashMap<String, Integer> daysPerMonth= new HashMap<>();
 	private Controller controller;
 	private LocalDate date;
-	
+
 	public MiniCalendarView() {
 		super();
 		this.date = LocalDate.now();
@@ -67,7 +67,7 @@ public class MiniCalendarView extends JPanel {
 			childPanel.add(new JLabel());
 			counter++;
 		}
-		
+
 		for(int i=3*firstDay+1;i<=20;i=i+3) {
 			if(day==dayCounter && this.date.equals(LocalDate.now())) {
 				JButton jb= new JButton(Integer.toString(dayCounter));
@@ -82,7 +82,7 @@ public class MiniCalendarView extends JPanel {
 			counter++;
 			dayCounter++;
 		}
-		
+
 		int line2counter=1;
 		while(dayCounter<=9) {
 			if(day==dayCounter && this.date.equals(LocalDate.now())) {
@@ -120,7 +120,7 @@ public class MiniCalendarView extends JPanel {
 		if(month.equals("02")&& year%4==0) {
 			daysInTheMonth=29;
 		}
-		
+
 		while(dayCounter<=daysInTheMonth) {
 			for(int i=0;i<21 &&dayCounter<=daysInTheMonth;i=i+3) {
 				if(day==dayCounter && this.date.equals(LocalDate.now())) {
@@ -135,7 +135,7 @@ public class MiniCalendarView extends JPanel {
 				}
 				counter++;
 				dayCounter++;
-				
+
 			}
 		}
 		for(Component c : childPanel.getComponents()) {
@@ -154,11 +154,11 @@ public class MiniCalendarView extends JPanel {
 		this.date = date;
 		updateCalendar();
 	}
-	
+
 	public void attach(Controller controller) {
 		this.controller = controller;
 	}
-	
+
 	/**
 	 * This method populates all of the maps with appropriate days per month, and each number with corresponding string month name and each letter with corresponding week day name.
 	 */

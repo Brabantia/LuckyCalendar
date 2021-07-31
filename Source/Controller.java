@@ -62,7 +62,7 @@ public class Controller {
 	public Event[] getAllEvents(String filter) {
 		return this.model.getEvents();
 	}
-	
+
 	/**
 	 *	Set the view to the specified date. Can be called by the other views.
 	**/
