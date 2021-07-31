@@ -6,23 +6,18 @@
 **/
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.time.LocalDate;
-import java.util.HashMap;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 
 public class MiniCalendarView extends JPanel {
-	private static HashMap<String, String> monthMap = new HashMap<>();
-	private static HashMap<String, Integer> daysPerMonth= new HashMap<>();
 	private Controller controller;
 	private LocalDate date;
 
 	public MiniCalendarView() {
-		super();
+		super(new BorderLayout());
 		this.date = LocalDate.now();
 		updateCalendar();
 	}
@@ -33,121 +28,50 @@ public class MiniCalendarView extends JPanel {
 
 	private void updateCalendar() {
 		super.removeAll();
-		super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		super.add(new JLabel(this.date.getMonth() + " " + this.date.getYear()));
-		super.add(getChildPanel());
+		super.add(new JLabel(this.date.getMonth() + " " + this.date.getYear(), SwingConstants.CENTER), BorderLayout.CENTER);
+		super.add(getChildPanel(), BorderLayout.PAGE_END);
 		super.revalidate();
 	}
 
 	private JPanel getChildPanel() {
-		int counter=0;
-		populateMap();
-		String nowString=this.date.toString();
-		int day= Integer.parseInt(nowString.substring(8));
-		int year= Integer.parseInt(nowString.substring(0,4));
-		String month= monthMap.get(nowString.substring(5, 7));
+		JPanel panel= new JPanel();
+		LocalDate day = LocalDate.of(this.date.getYear(), this.date.getMonth(), 1);
+		LocalDate now = LocalDate.now();
+		int maxDay = this.date.lengthOfMonth();
 
-		JPanel childPanel= new JPanel();
-		childPanel.setLayout(new GridLayout(7,7));
-		childPanel.add(new JLabel("Su"));
-		childPanel.add(new JLabel("Mo"));
-		childPanel.add(new JLabel("Tu"));
-		childPanel.add(new JLabel("We"));
-		childPanel.add(new JLabel("Th"));
-		childPanel.add(new JLabel("Fr"));
-		childPanel.add(new JLabel("Sa"));
-		counter=counter+7;
-		LocalDate first= LocalDate.of(this.date.getYear(), this.date.getMonth(), 1);
-		int firstDay= first.getDayOfWeek().getValue();
-		int dayCounter=1;
-		if(firstDay==7) {
-			firstDay=0;
+		panel.setLayout(new GridLayout(7,7));
+		panel.add(new JLabel("Su"));
+		panel.add(new JLabel("Mo"));
+		panel.add(new JLabel("Tu"));
+		panel.add(new JLabel("We"));
+		panel.add(new JLabel("Th"));
+		panel.add(new JLabel("Fr"));
+		panel.add(new JLabel("Sa"));
+		
+		int counter = 0;
+		while (counter++ < day.getDayOfWeek().getValue() % 7) {
+			panel.add(new JLabel());
 		}
-		for(int i=1;i<=firstDay;i++) {
-			childPanel.add(new JLabel());
-			counter++;
-		}
+		
+		for (int dayCounter = 1; dayCounter <= maxDay; ++dayCounter) {
+			JButton jb= new JButton(Integer.toString(dayCounter));
+			panel.add(jb);
 
-		for(int i=3*firstDay+1;i<=20;i=i+3) {
-			if(day==dayCounter && this.date.equals(LocalDate.now())) {
-				JButton jb= new JButton(Integer.toString(dayCounter));
+			if(day.equals(now)) {
+				jb.setBackground(Color.GRAY);
+			} else if (day.equals(this.date)) {
 				jb.setBackground(Color.YELLOW);
-				childPanel.add(jb);
-			}
-			else {
-				JButton jb= new JButton(Integer.toString(dayCounter));
-				jb.setBackground(Color.white);
-				childPanel.add(jb);
-			}
-			counter++;
-			dayCounter++;
-		}
-
-		int line2counter=1;
-		while(dayCounter<=9) {
-			if(day==dayCounter && this.date.equals(LocalDate.now())) {
-				JButton jb= new JButton(Integer.toString(dayCounter));
-				jb.setBackground(Color.YELLOW);
-				childPanel.add(jb);
-			}
-			else {
-				JButton jb= new JButton(Integer.toString(dayCounter));
+			} else {
 				jb.setBackground(Color.WHITE);
-				childPanel.add(jb);
 			}
-			line2counter=line2counter+1;
-			if(dayCounter!=9) {
-				line2counter=line2counter+2;
-			}
-			counter++;
-			dayCounter++;
+			day.plusDays(1);
 		}
-		for(int i=line2counter;i<20;i=i+3) {
-			if(day==dayCounter && this.date.equals(LocalDate.now())) {
-				JButton jb= new JButton(Integer.toString(dayCounter));
-				jb.setBackground(Color.YELLOW);
-				childPanel.add(jb);
-			}
-			else {
-				JButton jb= new JButton(Integer.toString(dayCounter));
-				jb.setBackground(Color.WHITE);
-				childPanel.add(jb);
-			}
-			counter++;
-			dayCounter++;
+		
+		counter += maxDay;
+		while(counter++ <= 42) {
+			panel.add(new JLabel());
 		}
-		int daysInTheMonth=daysPerMonth.get(nowString.substring(5, 7));
-		if(month.equals("02")&& year%4==0) {
-			daysInTheMonth=29;
-		}
-
-		while(dayCounter<=daysInTheMonth) {
-			for(int i=0;i<21 &&dayCounter<=daysInTheMonth;i=i+3) {
-				if(day==dayCounter && this.date.equals(LocalDate.now())) {
-					JButton jb= new JButton(Integer.toString(dayCounter));
-					jb.setBackground(Color.YELLOW);
-					childPanel.add(jb);
-				}
-				else {
-					JButton jb= new JButton(Integer.toString(dayCounter));
-					jb.setBackground(Color.WHITE);
-					childPanel.add(jb);
-				}
-				counter++;
-				dayCounter++;
-
-			}
-		}
-		for(Component c : childPanel.getComponents()) {
-			c.setFont(new Font("Courier New", Font.PLAIN, 18));
-		}
-		if(counter<49) {
-			while(counter<49) {
-				childPanel.add(new JLabel());
-				counter++;
-			}
-		}
-		return childPanel;
+		return panel;
 	}
 
 	public void setDate(LocalDate date) {
@@ -157,35 +81,5 @@ public class MiniCalendarView extends JPanel {
 
 	public void attach(Controller controller) {
 		this.controller = controller;
-	}
-
-	/**
-	 * This method populates all of the maps with appropriate days per month, and each number with corresponding string month name and each letter with corresponding week day name.
-	 */
-	public static void populateMap() {
-		monthMap.put("01", "January");
-		monthMap.put("02", "February");
-		monthMap.put("03", "March");
-		monthMap.put("04", "April");
-		monthMap.put("05", "May");
-		monthMap.put("06", "June");
-		monthMap.put("07", "July");
-		monthMap.put("08", "August");
-		monthMap.put("09", "September");
-		monthMap.put("10", "October");
-		monthMap.put("11", "November");
-		monthMap.put("12", "December");
-		daysPerMonth.put("01", 31);
-		daysPerMonth.put("02", 28);
-		daysPerMonth.put("03", 31);
-		daysPerMonth.put("04", 30);
-		daysPerMonth.put("05", 31);
-		daysPerMonth.put("06", 30);
-		daysPerMonth.put("07", 31);
-		daysPerMonth.put("08", 31);
-		daysPerMonth.put("09", 30);
-		daysPerMonth.put("10", 31);
-		daysPerMonth.put("11", 30);
-		daysPerMonth.put("12", 31);
 	}
 }
