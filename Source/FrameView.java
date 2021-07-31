@@ -31,9 +31,9 @@ public class FrameView extends JFrame {
 
 	public FrameView() {
 		this.miniCal = new MiniCalendarView();
-		this.agenda = new AgendaView(this);
+		this.agenda = new AgendaView();
 		this.views = new CalendarView[] {
-			new DailyView(this), new WeeklyView(this), new MonthlyView(this), this.agenda
+			new DailyView(), new WeeklyView(), new MonthlyView(), this.agenda
 		};
 
 		this.currentView = this.views[0];
