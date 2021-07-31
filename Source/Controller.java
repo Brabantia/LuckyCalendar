@@ -5,7 +5,7 @@
  *	@version 1.00 2021/7/17
 **/
 
-import java.time.*;
+import java.time.LocalDate;
 
 public class Controller {
 	public static final String OUTPUT_FILE = "output.txt";
@@ -50,15 +50,15 @@ public class Controller {
 	}
 
 	public Event[] getDayEvents(LocalDate date) {
-		return null;
+		return (new DayOnlyFilter(date)).filter(this.model.getEvents());
 	}
 
 	public Event[] getWeekEvents(LocalDate date) {
-		return null;
+		return (new WeekOnlyFilter(date)).filter(this.model.getEvents());
 	}
 
 	public Event[] getAllEvents(String filter) {
-		return null;
+		return this.model.getEvents();
 	}
 	
 	/**

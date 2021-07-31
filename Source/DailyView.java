@@ -5,15 +5,17 @@
  *	@version 1.00 2021/7/28
 **/
 
+import java.awt.Dimension;
+import java.time.LocalDate;
 import javax.swing.JComponent;
 import javax.swing.JTextPane;
-import java.time.LocalDate;
 
 public class DailyView extends JTextPane implements CalendarView {
 	private Controller controller;
 
 	public DailyView() {
 		super();
+		setPreferredSize(new Dimension(430,300));
 	}
 
 	public String getLabel() {
