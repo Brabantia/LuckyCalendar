@@ -2,14 +2,16 @@
  *	@(#)CalendarModel.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/17
+ *	@version 1.00 2021/7/31
 **/
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 public class CalendarModel {
 	private ArrayList<Event> events = new ArrayList<>(), recurringEvents = new ArrayList<>();
 	private ArrayList<Controller> listeners = new ArrayList<>();
@@ -21,28 +23,34 @@ public class CalendarModel {
 		listeners.add(listener);
 	}
 
-	public boolean addFromFile(String path) throws IOException {
-		File file = new File(path);
+	public boolean addFromFile(URI uri) {
+		File file = new File(uri);
 		if (!file.exists()) {
+			System.err.println("No file exists at URI: " + uri);
 			return false;
 		}
-		Scanner scan = new Scanner(file);
-		while (scan.hasNext()) {
-			String line = scan.nextLine();
-			try {
-				Event e = Event.decode(line);
-				if (e instanceof RecurringEvent) {
-					this.recurringEvents.add(e);
-				} else {
-					this.events.add(e);
+		try (Scanner scan = new Scanner(file)) {
+			while (scan.hasNext()) {
+				String line = scan.nextLine();
+				try {
+					Event e = Event.decode(line);
+					if (e instanceof RecurringEvent) {
+						this.recurringEvents.add(e);
+					} else {
+						this.events.add(e);
+					}
+				} catch(Exception e) {
+					System.err.println("Failed to parse: " + line);
+					e.printStackTrace();
+					return false;
 				}
-			} catch(Exception e) {
-				System.err.println("Failed to parse: " + line);
-				e.printStackTrace();
 			}
+			this.notifyChanges();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
 		}
-		scan.close();
-		this.notifyChanges();
+		
 		return true;
 	}
 
