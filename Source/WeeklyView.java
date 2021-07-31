@@ -6,25 +6,21 @@
 **/
 
 import javax.swing.*;
-import java.awt.*;
 
 public class WeeklyView implements CalendarView {
 	private final FrameView frame;
 	private Controller controller;
-	JTextPane textPane = new JTextPane();
 
 	public WeeklyView(FrameView frame) {
 		this.frame = frame;
-		textPane.setPreferredSize(new Dimension(430,300));
-
 	}
 
 	public String getLabel() {
 		return "Week";
 	}
 
-	public JTextPane getView() {
-		return textPane;
+	public JComponent getView() {
+		return new JLabel(new ImageIcon(getClass().getResource("Weekly.png")));
 	}
 
 	public void attach(Controller controller) {

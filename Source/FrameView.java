@@ -109,10 +109,10 @@ public class FrameView extends JFrame {
 				}
 				String date = JOptionPane.showInputDialog("Enter the date [mm/dd/yyyy]");
 				String startTime = JOptionPane.showInputDialog("Enter the start time [HH,mm]");
-        		String endTime = JOptionPane.showInputDialog("Enter the end time [HH,mm]");
-        		LocalDate date1 = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+		  		String endTime = JOptionPane.showInputDialog("Enter the end time [HH,mm]");
+		  		LocalDate date1 = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
 				TimeInterval timeInterval = new TimeInterval(date1, startTime, endTime);
-        		Event event = new Event(name,timeInterval);
+		  		Event event = new Event(name,timeInterval);
 
 				boolean isAdd = myCalendar.addEvent(event);
 				if (isAdd){
@@ -153,13 +153,13 @@ public class FrameView extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent we) {
-//				exit();
+				exit();
 			}
 		});
 
-      setTitle("Calendar");
-      pack();
-      setResizable(false);
+		setTitle("Calendar");
+		pack();
+		setResizable(false);
 	}
 
 //	private void exit() {

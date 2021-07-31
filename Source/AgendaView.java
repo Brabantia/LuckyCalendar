@@ -6,27 +6,23 @@
 **/
 
 import javax.swing.*;
-import java.awt.*;
 
 public class AgendaView implements CalendarView {
 	private final FrameView frame;
 	private Controller controller;
-	JTextPane textPane = new JTextPane();
-
 
 	public AgendaView(FrameView frame) {
 		this.frame = frame;
-		textPane.setPreferredSize(new Dimension(430,300));
-
 	}
 
 	public String getLabel() {
 		return "Agenda";
 	}
 
-	public JTextPane getView() {
-		return textPane;
+	public JComponent getView() {
+		return new JLabel(new ImageIcon(getClass().getResource("Agenda.png")));
 	}
+
 	public void attach(Controller controller) {
 		this.controller = controller;
 	}
