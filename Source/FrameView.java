@@ -2,7 +2,7 @@
  *	@(#)FrameView.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/17
+ *	@version 1.00 2021/7/31
 **/
 
 
@@ -15,7 +15,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 
 public class FrameView extends JFrame {
