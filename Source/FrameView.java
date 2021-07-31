@@ -167,7 +167,7 @@ public class FrameView extends JFrame {
 			JOptionPane.showMessageDialog(this, "No file selected");
 			return;
 		}
-		if (this.controller.addEventsFromFile(file.toURI())) {
+		if (this.controller.addEventsFromFile(file.getAbsolutePath())) {
 			JOptionPane.showMessageDialog(this, "Successfully imported events from file");
 		} else {
 			JOptionPane.showMessageDialog(this, "Failure to load or parse events from file");
