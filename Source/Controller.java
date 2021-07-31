@@ -64,6 +64,13 @@ public class Controller {
 	public Event[] getAllEvents(String filter) {
 		return null;
 	}
+	
+	/**
+	 *	Set the view to the specified date. Can be called by the other views.
+	**/
+	public void setDate(LocalDate date) {
+		this.frame.setDate(date);
+	}
 
 	/**
 	 *	Called by the model to indicate that the underlying data has been updated

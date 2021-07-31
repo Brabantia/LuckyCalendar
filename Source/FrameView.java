@@ -14,8 +14,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class FrameView extends JFrame {
 	private final MiniCalendarView miniCal;
@@ -30,18 +28,13 @@ public class FrameView extends JFrame {
 	private final JButton[] viewButtons;
 	private CalendarView currentView;
 	private Controller controller;
-	private MyCalendar myCalendar = new MyCalendar();
 
 	public FrameView() {
-		this.controller = new Controller(this);
-		this.miniCal = new MiniCalendarView(this);
-		miniCal.attach(controller);
+		this.miniCal = new MiniCalendarView();
 		this.agenda = new AgendaView(this);
 		this.views = new CalendarView[] {
 			new DailyView(this), new WeeklyView(this), new MonthlyView(this), this.agenda
 		};
-
-		refresh(LocalDate.now());
 
 		this.currentView = this.views[0];
 		this.viewPanel.add(new JScrollPane(this.currentView.getView()));
@@ -58,9 +51,9 @@ public class FrameView extends JFrame {
 		rightButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (currentView != views[views.length-1]){
-					for (int i = 0;i< views.length;i++){
-						if (currentView == views[i]){
+				if (currentView != views[views.length-1]) {
+					for (int i = 0;i< views.length;i++) {
+						if (currentView == views[i]) {
 							setView(views[i+1].getLabel());
 							return;
 						}
@@ -71,9 +64,9 @@ public class FrameView extends JFrame {
 		leftButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (currentView != views[0]){
-					for (int i = 0;i< views.length;i++){
-						if (currentView == views[i]){
+				if (currentView != views[0]) {
+					for (int i = 0;i< views.length;i++) {
+						if (currentView == views[i]) {
 							setView(views[i-1].getLabel());
 							return;
 						}
@@ -84,7 +77,7 @@ public class FrameView extends JFrame {
 		todayButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((MiniCalendarJPanel)miniCal.getView()).updateDate(LocalDateTime.now());
+				setDate(LocalDate.now());
 			}
 		});
 		viewButtons = new JButton[this.views.length];
@@ -103,37 +96,13 @@ public class FrameView extends JFrame {
 		createButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String name = JOptionPane.showInputDialog("Enter the date name");
-				if (name == null){
-					return;
-				}
-				String date = JOptionPane.showInputDialog("Enter the date [mm/dd/yyyy]");
-				String startTime = JOptionPane.showInputDialog("Enter the start time [HH,mm]");
-		  		String endTime = JOptionPane.showInputDialog("Enter the end time [HH,mm]");
-		  		LocalDate date1 = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-				TimeInterval timeInterval = new TimeInterval(date1, startTime, endTime);
-		  		Event event = new Event(name,timeInterval);
-
-				boolean isAdd = myCalendar.addEvent(event);
-				if (isAdd){
-					JOptionPane.showMessageDialog(null,"Add Success!");
-				}else {
-					JOptionPane.showMessageDialog(null,"Add Failure!");
-				}
-
+				createEvent();
 			}
 		});
 		fromFileButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setCurrentDirectory(new File("/"));
-				fileChooser.showOpenDialog(null);
-				File f = fileChooser.getSelectedFile();
-				if(f != null){
-					myCalendar.loadFile("events.txt");
-					JOptionPane.showMessageDialog(null,"Import file success!");
-				}
+				loadFile();
 			}
 		});
 
@@ -162,54 +131,37 @@ public class FrameView extends JFrame {
 		setResizable(false);
 	}
 
-//	private void exit() {
-//		this.controller.exit();
-//	}
+	private void exit() {
+		this.controller.exit();
+	}
 
-	public void refresh(LocalDate localDate) {
-		for (int i = 0;i< views.length;i++){
-			if (views[i] instanceof DailyView){
-				String txt = myCalendar.getDayOutput(localDate);
-				((JTextPane)views[i].getView()).setText(txt);
-			}
-			if (views[i] instanceof WeeklyView){
-//				StringBuffer sb = new StringBuffer("");
-//				while (localDate.getDayOfWeek().getValue() != 1){
-//					localDate = localDate.minusDays(1);
-//				}
-//				for (int j = 0;j < 7;j++){
-//					sb.append(myCalendar.getDayOutput(localDate));
-//					localDate = localDate.plusDays(1);
-//				}
-//				System.out.println(sb.toString());
-				String txt = myCalendar.getWeekOutput(localDate);
-				((JTextPane)views[i].getView()).setText(txt);
-			}
-
-			if (views[i] instanceof MonthlyView){
-//				StringBuffer sb = new StringBuffer("");
-//				while (localDate.getDayOfMonth() != 1){
-//					localDate = localDate.minusDays(1);
-//				}
-//				for (int j = 0;j < localDate.getMonth().maxLength();j++){
-//					sb.append(myCalendar.getDayOutput(localDate));
-//					localDate = localDate.plusDays(1);
-//				}
-//				System.out.println(sb.toString());
-				String txt = myCalendar.getMonthOutputDetail(localDate);
-				((JTextPane)views[i].getView()).setText(txt);
-			}
-			if (views[i] instanceof  AgendaView){
-				StringBuffer sb = new StringBuffer("");
-				for (Event event:myCalendar.getEvents() ){
-					sb.append(event+"\n");
-				}
-
-				((JTextPane)views[i].getView()).setText(sb.toString());
-			}
+	private void createEvent() {
+		String name = JOptionPane.showInputDialog("Enter the date name");
+		if (name == null) {
+			return;
 		}
+		String date = JOptionPane.showInputDialog("Enter the date [mm/dd/yyyy]");
+		String startTime = JOptionPane.showInputDialog("Enter the start time [HH:mm]");
+		String endTime = JOptionPane.showInputDialog("Enter the end time [HH:mm]");
+		TimeInterval timeInterval = new TimeInterval(startTime, endTime);
+		Event event = new Event(name, date, timeInterval);
 
-		setVisible(true);
+		Event conflict = this.controller.createEvent(event);
+		if (conflict == null) {
+			JOptionPane.showMessageDialog(null, "Add Success!");
+		} else {
+			JOptionPane.showMessageDialog(null, "There's a conflicting event: " + conflict);
+		}
+	}
+
+	private void loadFile() {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.showOpenDialog(this);
+		File file = fileChooser.getSelectedFile();
+		if(file != null) {
+			this.controller.addEventsFromFile(file.getAbsolutePath());
+			JOptionPane.showMessageDialog(null, "Import file success!");
+		}
 	}
 
 	public void attach(Controller controller) {
