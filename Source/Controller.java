@@ -57,10 +57,6 @@ public class Controller {
 		return null;
 	}
 
-	public Event[] getMonthEvents(LocalDate date) {
-		return null;
-	}
-
 	public Event[] getAllEvents(String filter) {
 		return null;
 	}
