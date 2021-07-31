@@ -1,8 +1,8 @@
 /**
  *	@(#)MiniCalendarView.java
  *
- *	@author Yorick van de Water, Shyam Vyas
- *	@version 1.00 2021/7/17
+ *	@author Shyam Vyas
+ *	@version 1.00 2021/7/27
 **/
 
 import java.awt.Color;
@@ -10,37 +10,34 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.time.LocalDate;
+import java.util.HashMap;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 
 public class MiniCalendarView extends JComponent {
+	private static HashMap<String, String> monthMap = new HashMap<>();
+	private static HashMap<String, Integer> daysPerMonth= new HashMap<>();
 	private final FrameView frame;
 	private Controller controller;
 	public static JPanel jl;
 	LocalDate ld=LocalDate.now();
 	String str;
 	
-	public void setLocalDate(LocalDate l) {
-		ld=l;
-	}
-	public LocalDate getLocalDate() {
-		return ld;
-	}
-	
 	public MiniCalendarView(FrameView frame) {
 		this.frame = frame;
 	}
+
 	public JComponent getView() {
 		int counter=0;
 		jl=new JPanel();
 		String s= "";
 		LocalDate now= ld;
-		MyCalendar.populateMap();
+		populateMap();
 		String nowString=now.toString();
 		int day= Integer.parseInt(nowString.substring(8));
 		int year= Integer.parseInt(nowString.substring(0,4));
-		String month= MyCalendar.monthMap.get(nowString.substring(5, 7));
+		String month= monthMap.get(nowString.substring(5, 7));
 		s+=(month+" "+year);
 		JLabel titleLabel= new JLabel(s);
 		titleLabel.setFont(new Font("Courier New", Font.PLAIN, 18));
@@ -115,7 +112,7 @@ public class MiniCalendarView extends JComponent {
 			counter++;
 			dayCounter++;
 		}
-		int daysInTheMonth=MyCalendar.daysPerMonth.get(nowString.substring(5, 7));
+		int daysInTheMonth=daysPerMonth.get(nowString.substring(5, 7));
 		if(month.equals("02")&& year%4==0) {
 			daysInTheMonth=29;
 		}
@@ -150,7 +147,42 @@ public class MiniCalendarView extends JComponent {
 		return jl;
 	}
 
+	public void setLocalDate(LocalDate l) {
+		ld=l;
+	}
+	
 	public void attach(Controller controller) {
 		this.controller = controller;
 	}
+	
+	/**
+	 * This method populates all of the maps with appropriate days per month, and each number with corresponding string month name and each letter with corresponding week day name.
+	 */
+	public static void populateMap() {
+		monthMap.put("01", "January");
+		monthMap.put("02", "February");
+		monthMap.put("03", "March");
+		monthMap.put("04", "April");
+		monthMap.put("05", "May");
+		monthMap.put("06", "June");
+		monthMap.put("07", "July");
+		monthMap.put("08", "August");
+		monthMap.put("09", "September");
+		monthMap.put("10", "October");
+		monthMap.put("11", "November");
+		monthMap.put("12", "December");
+		daysPerMonth.put("01", 31);
+		daysPerMonth.put("02", 28);
+		daysPerMonth.put("03", 31);
+		daysPerMonth.put("04", 30);
+		daysPerMonth.put("05", 31);
+		daysPerMonth.put("06", 30);
+		daysPerMonth.put("07", 31);
+		daysPerMonth.put("08", 31);
+		daysPerMonth.put("09", 30);
+		daysPerMonth.put("10", 31);
+		daysPerMonth.put("11", 30);
+		daysPerMonth.put("12", 31);
+	}
+
 }
