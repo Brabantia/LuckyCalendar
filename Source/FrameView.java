@@ -53,13 +53,13 @@ public class FrameView extends JFrame {
 		rightButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				incrementDay();
+				nextMonth();
 			}
 		});
 		leftButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				decrementDay();
+				previousMonth();
 			}
 		});
 		todayButton.addActionListener(new ActionListener() {
@@ -123,11 +123,11 @@ public class FrameView extends JFrame {
 		this.controller.exit();
 	}
 
-	private void incrementDay() {
+	private void nextMonth() {
 		setDate(this.date.plusMonths(1));
 	}
 
-	private void decrementDay() {
+	private void previousMonth() {
 		setDate(this.date.minusMonths(1));
 	}
 

@@ -2,7 +2,7 @@
  *	@(#)WeekOnlyFilter.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/17
+ *	@version 1.00 2021/7/30
 **/
 
 import java.time.LocalDate;
