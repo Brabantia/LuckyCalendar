@@ -28,8 +28,10 @@ public class FrameView extends JFrame {
 	private final JButton[] viewButtons;
 	private CalendarView currentView;
 	private Controller controller;
+	private LocalDate date;
 
 	public FrameView() {
+		this.date = LocalDate.now();
 		this.miniCal = new MiniCalendarView();
 		this.agenda = new AgendaView();
 		this.views = new CalendarView[] {
@@ -45,33 +47,19 @@ public class FrameView extends JFrame {
 		JPanel overviewPanel = new JPanel();
 		JPanel eventViewPanel = new JPanel();
 
-		monthButtonPanel.add(this.todayButton);
 		monthButtonPanel.add(this.leftButton);
+		monthButtonPanel.add(this.todayButton);
 		monthButtonPanel.add(this.rightButton);
 		rightButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (currentView != views[views.length-1]) {
-					for (int i = 0;i< views.length;i++) {
-						if (currentView == views[i]) {
-							setView(views[i+1].getLabel());
-							return;
-						}
-					}
-				}
+				incrementDay();
 			}
 		});
 		leftButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (currentView != views[0]) {
-					for (int i = 0;i< views.length;i++) {
-						if (currentView == views[i]) {
-							setView(views[i-1].getLabel());
-							return;
-						}
-					}
-				}
+				decrementDay();
 			}
 		});
 		todayButton.addActionListener(new ActionListener() {
@@ -135,6 +123,14 @@ public class FrameView extends JFrame {
 		this.controller.exit();
 	}
 
+	private void incrementDay() {
+		setDate(this.date.plusMonths(1));
+	}
+
+	private void decrementDay() {
+		setDate(this.date.minusMonths(1));
+	}
+
 	private void createEvent() {
 		String name = JOptionPane.showInputDialog("Enter the date name");
 		if (name == null) {
@@ -173,6 +169,7 @@ public class FrameView extends JFrame {
 	}
 
 	public void display() {
+		refreshData();
 		setVisible(true);
 	}
 
@@ -181,12 +178,18 @@ public class FrameView extends JFrame {
 	}
 
 	public void refreshData() {
+		setDate(this.date);
 	}
 
 	/**
 	 *	Set the view to the specified date. Can be called by the other views.
 	**/
 	public void setDate(LocalDate date) {
+		this.date = date;
+		this.miniCal.setDate(date);
+		for (CalendarView view : this.views) {
+			view.setDate(date);
+		}
 	}
 
 	public void setView(String name) {

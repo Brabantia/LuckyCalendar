@@ -18,11 +18,9 @@ public class MiniCalendarView extends JPanel {
 	private JLabel monthLabel;
 	private Controller controller;
 	private LocalDate date;
-	private LocalDate selectDay;
 
 	public MiniCalendarView() {
-		date = LocalDate.now();
-		selectDay = LocalDate.of(date.getYear(),date.getMonth(),date.getDayOfMonth());
+		this.date = LocalDate.now();
 
 		setLayout(new BorderLayout());
 
@@ -30,22 +28,6 @@ public class MiniCalendarView extends JPanel {
 		monthLabel = new JLabel();
 		northPanel.add(monthLabel);
 
-		JLabel preMonth = new JLabel("  <  ");
-		preMonth.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				calendarAdd(-1);
-			}
-		});
-		northPanel.add(preMonth);
-		JLabel nextMonth = new JLabel("  >  ");
-		nextMonth.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				calendarAdd(1);
-			}
-		});
-		northPanel.add(nextMonth);
 		add(northPanel, BorderLayout.NORTH);
 
 		JPanel centerPanel = new JPanel(new GridLayout(7, 7, 1, 1));
@@ -76,12 +58,7 @@ public class MiniCalendarView extends JPanel {
 						}
 						((JLabel)e.getSource()).getParent().setBackground(Color.gray);
 
-						selectDay = LocalDate.of(date.getYear(),date.getMonth().getValue(),Integer.parseInt(((JLabel)e.getSource()).getText()));
-						System.out.println(Integer.parseInt(((JLabel)e.getSource()).getText()));
-						System.out.println(selectDay);
-						controller.setDate(selectDay);
-
-						setVisible(true);
+						controller.setDate(LocalDate.of(date.getYear(), date.getMonth(), Integer.parseInt(((JLabel)e.getSource()).getText())));
 					}
 				});
 			}
@@ -91,27 +68,33 @@ public class MiniCalendarView extends JPanel {
 		JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		add(southPanel, BorderLayout.SOUTH);
 		updateCalendar();
-
-		setVisible(true);
 	}
 
 	private void updateCalendar() {
-		int i = 0, j = (date.getDayOfWeek().getValue()-1) % 7;
-		int maxDay = date.getMonth().maxLength();
-		for (int k = 0; k < j; k++) dayLabel[0][k].setText("");
+		LocalDate firstOfMonth = this.date.minusDays(this.date.getDayOfMonth()-1);
+		int i = 0, j = firstOfMonth.getDayOfWeek().getValue() % 7;
+		int maxDay = this.date.lengthOfMonth();
+
+		for (int k = 0; k < j; k++) {
+			dayLabel[i][j].getParent().setBackground(Color.WHITE);
+			dayLabel[0][k].setText("");
+		}
+
 		for (int k = 1; k <= maxDay; k++) {
+			dayLabel[i][j].getParent().setBackground(this.date.getDayOfMonth() != k ? Color.WHITE : Color.GRAY);
 			dayLabel[i][j].setText(Integer.toString(k));
-			if (j == 6) {
+			if (j++ == 6) {
 				i++;
 				j = 0;
-			} else j++;
+			}
 		}
 		while (i < 6) {
+			dayLabel[i][j].getParent().setBackground(Color.WHITE);
 			dayLabel[i][j].setText("");
-			if (j == 6) {
+			if (j++ == 6) {
 				i++;
 				j = 0;
-			} else j++;
+			}
 		}
 		monthLabel.setText(date.getMonth() + "  " + date.getYear());
 	}
@@ -123,17 +106,8 @@ public class MiniCalendarView extends JPanel {
 	public void attach(Controller controller) {
 		this.controller = controller;
 	}
-	
-	public LocalDate getSelectDay() {
-		return selectDay;
-	}
 
-	public void calendarAdd(int delta) {
-		date = date.plusMonths(delta);
-		updateCalendar();
-	}
-
-	public void updateDate(LocalDate date){
+	public void setDate(LocalDate date) {
 		this.date = date;
 		updateCalendar();
 	}

@@ -12,8 +12,8 @@ public class LuckyCalendar {
 
 	public static void main(String[] args) throws IOException {
 		CalendarModel model = new CalendarModel();
-		if (!model.addFromFile(DATA_PATH)) {
-			System.out.println("Failed to load from file: " + DATA_PATH);
+		if (!model.addFromFile(LuckyCalendar.class.getResource(DATA_PATH).getPath())) {
+			System.err.println("Failed to load from file: " + DATA_PATH);
 		}
 
 		FrameView frame = new FrameView();

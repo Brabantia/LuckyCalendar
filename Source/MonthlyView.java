@@ -5,15 +5,19 @@
  *	@version 1.00 2021/7/28
 **/
 
+import java.awt.Dimension;
+import java.awt.Font;
+import java.time.LocalDate;
 import javax.swing.JComponent;
 import javax.swing.JTextPane;
-import java.time.LocalDate;
 
 public class MonthlyView extends JTextPane implements CalendarView {
 	private Controller controller;
 
 	public MonthlyView() {
 		super();
+		setPreferredSize(new Dimension(430,300));
+        setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 	}
 
 	public String getLabel() {
@@ -35,7 +39,7 @@ public class MonthlyView extends JTextPane implements CalendarView {
 
         LocalDate oneDay = LocalDate.of(date.getYear(), date.getMonth(), 1);
 
-        for (int i = 0; i < oneDay.getDayOfWeek().getValue(); i++) {
+        for (int i = 0; i < oneDay.getDayOfWeek().getValue() % 7; i++) {
             sb.append("    ");
         }
 

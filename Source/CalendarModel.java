@@ -57,7 +57,7 @@ public class CalendarModel {
 		out.close();
 	}
 
-	public Event[] getEvents(){
+	public Event[] getEvents() {
 		Event[] eventList = new Event[this.events.size() + this.recurringEvents.size()];
 		this.events.toArray(eventList);
 		int i = this.events.size();
@@ -70,17 +70,11 @@ public class CalendarModel {
 	public void addEvent(Event newEvent) {
 		for (Event event : this.events) {
 			if (event.conflicts(newEvent)) {
-				System.out.println();
-				System.out.println("Conflicts with existing event: " + event);
-				System.out.println("Event not added");
 				return;
 			}
 		}
 		for (Event event : this.recurringEvents) {
 			if (event.conflicts(newEvent)) {
-				System.out.println();
-				System.out.println("Conflicts with existing event: " + event);
-				System.out.println("Event not added");
 				return;
 			}
 		}
@@ -125,12 +119,6 @@ public class CalendarModel {
 	public void notifyChanges() {
 		for (Controller listener : this.listeners) {
 			listener.calendarUpdated();
-		}
-		for (Event e : this.events) {
-			System.out.println(e);
-		}
-		for (Event e : this.recurringEvents) {
-			System.out.println(e);
 		}
 	}
 }
