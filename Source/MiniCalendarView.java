@@ -15,34 +15,38 @@ import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.Border;
 
-public class MiniCalendarView extends JComponent {
+public class MiniCalendarView extends JPanel {
 	private static HashMap<String, String> monthMap = new HashMap<>();
 	private static HashMap<String, Integer> daysPerMonth= new HashMap<>();
-	private final FrameView frame;
 	private Controller controller;
-	public static JPanel jl;
-	LocalDate ld=LocalDate.now();
-	String str;
+	private LocalDate date;
 	
-	public MiniCalendarView(FrameView frame) {
-		this.frame = frame;
+	public MiniCalendarView() {
+		super();
+		this.date = LocalDate.now();
+		updateCalendar();
 	}
 
-	public JComponent getView() {
+	public JPanel getView() {
+		return this;
+	}
+
+	private void updateCalendar() {
+		super.removeAll();
+		super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		super.add(new JLabel(this.date.getMonth() + " " + this.date.getYear()));
+		super.add(getChildPanel());
+		super.revalidate();
+	}
+
+	private JPanel getChildPanel() {
 		int counter=0;
-		jl=new JPanel();
-		String s= "";
-		LocalDate now= ld;
 		populateMap();
-		String nowString=now.toString();
+		String nowString=this.date.toString();
 		int day= Integer.parseInt(nowString.substring(8));
 		int year= Integer.parseInt(nowString.substring(0,4));
 		String month= monthMap.get(nowString.substring(5, 7));
-		s+=(month+" "+year);
-		JLabel titleLabel= new JLabel(s);
-		titleLabel.setFont(new Font("Courier New", Font.PLAIN, 18));
-		jl.setLayout(new BoxLayout(jl, BoxLayout.Y_AXIS));
-		jl.add(titleLabel);
+
 		JPanel childPanel= new JPanel();
 		childPanel.setLayout(new GridLayout(7,7));
 		childPanel.add(new JLabel("Su"));
@@ -53,7 +57,7 @@ public class MiniCalendarView extends JComponent {
 		childPanel.add(new JLabel("Fr"));
 		childPanel.add(new JLabel("Sa"));
 		counter=counter+7;
-		LocalDate first= LocalDate.of(now.getYear(), now.getMonth(), 1);
+		LocalDate first= LocalDate.of(this.date.getYear(), this.date.getMonth(), 1);
 		int firstDay= first.getDayOfWeek().getValue();
 		int dayCounter=1;
 		if(firstDay==7) {
@@ -65,7 +69,7 @@ public class MiniCalendarView extends JComponent {
 		}
 		
 		for(int i=3*firstDay+1;i<=20;i=i+3) {
-			if(day==dayCounter && ld.equals(LocalDate.now())) {
+			if(day==dayCounter && this.date.equals(LocalDate.now())) {
 				JButton jb= new JButton(Integer.toString(dayCounter));
 				jb.setBackground(Color.YELLOW);
 				childPanel.add(jb);
@@ -81,7 +85,7 @@ public class MiniCalendarView extends JComponent {
 		
 		int line2counter=1;
 		while(dayCounter<=9) {
-			if(day==dayCounter && ld.equals(LocalDate.now())) {
+			if(day==dayCounter && this.date.equals(LocalDate.now())) {
 				JButton jb= new JButton(Integer.toString(dayCounter));
 				jb.setBackground(Color.YELLOW);
 				childPanel.add(jb);
@@ -99,7 +103,7 @@ public class MiniCalendarView extends JComponent {
 			dayCounter++;
 		}
 		for(int i=line2counter;i<20;i=i+3) {
-			if(day==dayCounter && ld.equals(LocalDate.now())) {
+			if(day==dayCounter && this.date.equals(LocalDate.now())) {
 				JButton jb= new JButton(Integer.toString(dayCounter));
 				jb.setBackground(Color.YELLOW);
 				childPanel.add(jb);
@@ -119,7 +123,7 @@ public class MiniCalendarView extends JComponent {
 		
 		while(dayCounter<=daysInTheMonth) {
 			for(int i=0;i<21 &&dayCounter<=daysInTheMonth;i=i+3) {
-				if(day==dayCounter && ld.equals(LocalDate.now())) {
+				if(day==dayCounter && this.date.equals(LocalDate.now())) {
 					JButton jb= new JButton(Integer.toString(dayCounter));
 					jb.setBackground(Color.YELLOW);
 					childPanel.add(jb);
@@ -134,7 +138,7 @@ public class MiniCalendarView extends JComponent {
 				
 			}
 		}
-		for(Component c: childPanel.getComponents()) {
+		for(Component c : childPanel.getComponents()) {
 			c.setFont(new Font("Courier New", Font.PLAIN, 18));
 		}
 		if(counter<49) {
@@ -143,12 +147,12 @@ public class MiniCalendarView extends JComponent {
 				counter++;
 			}
 		}
-		jl.add(childPanel);		
-		return jl;
+		return childPanel;
 	}
 
-	public void setLocalDate(LocalDate l) {
-		ld=l;
+	public void setDate(LocalDate date) {
+		this.date = date;
+		updateCalendar();
 	}
 	
 	public void attach(Controller controller) {
@@ -184,5 +188,4 @@ public class MiniCalendarView extends JComponent {
 		daysPerMonth.put("11", 30);
 		daysPerMonth.put("12", 31);
 	}
-
 }

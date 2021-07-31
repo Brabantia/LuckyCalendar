@@ -8,7 +8,7 @@
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
-public class TimeInterval implements Comparable<TimeInterval>{
+public class TimeInterval implements Comparable<TimeInterval> {
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("H:mm");
 
 	private final LocalTime startTime, endTime;
@@ -59,13 +59,26 @@ public class TimeInterval implements Comparable<TimeInterval>{
 	 *	@return a String encoding of this TimeInterval
 	**/
 	public String encode() {
-		return null;
+		return this.startTime.format(FORMATTER) + "-" + this.endTime.format(FORMATTER);
+	}
+	/**
+	 *	Compares this TimeInterval to an other TimeInterval
+	 *	@param other TimeInterval this one is being compared to
+	 *	@return an integer representation of the difference in the start times of this event and another
+	 *	@Override
+	**/
+	public int compareTo(TimeInterval other) {
+		int comparison = this.startTime.compareTo(other.startTime);
+		if (comparison != 0) {
+			return comparison;
+		}
+		return this.endTime.compareTo(other.endTime);
 	}
 	/**
 	 *	Returns a String representation of this TimeInterval
 	 *	@return a String representation of this TimeInterval
+	 *	@Override
 	**/
-	@Override
 	public String toString() {
 		return this.startTime.format(FORMATTER) + " - " + this.endTime.format(FORMATTER);
 	}
@@ -74,19 +87,7 @@ public class TimeInterval implements Comparable<TimeInterval>{
 	 *	@return an TimeInterval decoded from two strings.
 	**/
 	public static TimeInterval decode(String input) {
-		return null;
-	}
-	/**
-	 * Compares this TimeInterval to an other TimeInterval
-	 * @param other TimeInterval this one is being compared to
-	 * @return an integer representation of the difference in the start times of this event and another
-	 */
-	//@Override
-	public int compareTo(TimeInterval other) {
-		int comparison = this.startTime.compareTo(other.startTime);
-		if (comparison != 0) {
-			return comparison;
-		}
-		return this.endTime.compareTo(other.endTime);
+		String[] times = input.split("-");
+		return new TimeInterval(times[0], times[1]);
 	}
 }

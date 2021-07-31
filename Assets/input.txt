@@ -1,0 +1,10 @@
+Event;"Dentist";"Getting those teeth checked";false;10/23/2021;9:00-9:30;Gentle Dental;Yorick,;
+Event;"Christmas";"Unwrapping those presents";false;12/25/2021;11:00-19:30;Parents House;Yorick,mom,dad,sister,;
+Event;"New Years";"Celebrating the start of something new";false;12/31/2021;22:00-23:59;Parents House;Yorick,mom,dad,sister,;
+Event;"Easter";"Easter brunch with family";false;04/15/2022;9:00-11:30;Parents House;Yorick,mom,dad,sister,;
+Event;"Sister Birthday";"Celebrating sisters 34th";false;01/14/2022;9:00-12:30;Parents House;Yorick,mom,dad,sister,;
+RecurringEvent;"Grocery Shopping";"Covering weekly shopping needs";false;07/15/2021;12/21/2021;WA;15:30-17:00;Safeway;Yorick,;
+RecurringEvent;"Church";"Meeting God's people";false;07/11/2021;12/26/2021;WA;11:00-13:00;Calvary;Yorick,David,;
+RecurringEvent;"Algorithms";"Code algorithms harder stronger better faster";false;06/04/2021;08/04/2021;MW;19:00-21:00;Zoom;Yorick,;
+RecurringEvent;"Object Oriented Design";"Learning how to make object oriented apps";false;06/04/2021;08/04/2021;MW;9:00-11:00;Zoom;Yorick,;
+RecurringEvent;"Visit Family";"Visiting the family at home";false;07/15/2021;12/21/2021;SA;16:00-19:30;Parents House;Yorick,mom,dad,sister,;
