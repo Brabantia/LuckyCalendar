@@ -1,8 +1,8 @@
 /**
  *	@(#)MiniCalendarView.java
  *
- *	@author Yorick van de Water
- *	@version 1.00 2021/7/17
+ *	@author Bingzhen Chen
+ *	@version 1.00 2021/7/28
 **/
 
 import javax.swing.*;
