@@ -2,10 +2,10 @@
  *	@(#)Controller.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/17
+ *	@version 1.00 2021/7/30
 **/
 
-import java.time.*;
+import java.time.LocalDate;
 
 public class Controller {
 	public static final String OUTPUT_FILE = "output.txt";
@@ -50,19 +50,22 @@ public class Controller {
 	}
 
 	public Event[] getDayEvents(LocalDate date) {
-		return null;
+		return (new DayOnlyFilter(date)).filter(this.model.getEvents());
 	}
 
 	public Event[] getWeekEvents(LocalDate date) {
-		return null;
-	}
-
-	public Event[] getMonthEvents(LocalDate date) {
-		return null;
+		return (new WeekOnlyFilter(date)).filter(this.model.getEvents());
 	}
 
 	public Event[] getAllEvents(String filter) {
-		return null;
+		return this.model.getEvents();
+	}
+	
+	/**
+	 *	Set the view to the specified date. Can be called by the other views.
+	**/
+	public void setDate(LocalDate date) {
+		this.frame.setDate(date);
 	}
 
 	/**
