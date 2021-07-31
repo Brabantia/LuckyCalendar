@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 public class CalendarModel {
 	private ArrayList<Event> events = new ArrayList<>(), recurringEvents = new ArrayList<>();
 	private ArrayList<Controller> listeners = new ArrayList<>();
@@ -42,6 +41,7 @@ public class CalendarModel {
 				e.printStackTrace();
 			}
 		}
+		scan.close();
 		this.notifyChanges();
 		return true;
 	}
