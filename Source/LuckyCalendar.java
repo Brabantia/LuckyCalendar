@@ -18,7 +18,7 @@ public class LuckyCalendar {
 		if (url == null) {
 			System.err.println("Failed to load from file: " + INPUT_FILE);
 		} else {
-			model.addFromFile(url.toURI());
+			model.addFromFile(url.toURI().getSchemeSpecificPart());
 		}
 
 		FrameView frame = new FrameView();

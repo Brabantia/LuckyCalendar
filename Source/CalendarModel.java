@@ -6,9 +6,8 @@
 **/
 
 import java.io.File;
-import java.io.PrintWriter;
 import java.io.IOException;
-import java.net.URI;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -23,10 +22,10 @@ public class CalendarModel {
 		listeners.add(listener);
 	}
 
-	public boolean addFromFile(URI uri) {
-		File file = new File(uri);
+	public boolean addFromFile(String path) {
+		File file = new File(path);
 		if (!file.exists()) {
-			System.err.println("No file exists at URI: " + uri);
+			System.err.println("File doesn't exist: " + path);
 			return false;
 		}
 		try (Scanner scan = new Scanner(file)) {
@@ -50,7 +49,7 @@ public class CalendarModel {
 			e.printStackTrace();
 			return false;
 		}
-		
+
 		return true;
 	}
 

@@ -31,7 +31,7 @@ public class WeeklyView extends JTextPane implements CalendarView {
 	public void attach(Controller controller) {
 		this.controller = controller;
 	}
-	
+
 	public void setDate(LocalDate date) {
 		LocalDate localDate = LocalDate.of(date.getYear(),date.getMonth(),date.getDayOfMonth());
 
@@ -51,7 +51,7 @@ public class WeeklyView extends JTextPane implements CalendarView {
         for (Event e : set) {
             text += e + "\n";
         }
-		
+
         super.setText(text);
     }
 }

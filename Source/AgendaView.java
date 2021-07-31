@@ -32,7 +32,7 @@ public class AgendaView extends JTextPane implements CalendarView {
 
 	public void setFilters(String... filters) {
 	}
-	
+
 	public void setDate(LocalDate date) {
         StringBuffer sb = new StringBuffer("");
 		for (Event event : this.controller.getDayEvents(date)){

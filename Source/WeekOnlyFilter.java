@@ -32,7 +32,7 @@ public class WeekOnlyFilter implements EventFilter {
 	public Event[] filter(Event[] events) {
 		List<Event> filtered = Arrays.asList(events).stream()
 			.filter(su.or(mo).or(tu).or(we).or(th).or(fr).or(sa)).collect(Collectors.toList());
-		
+
 		Event[] results = new Event[filtered.size()];
 		return filtered.toArray(results);
 	}
