@@ -24,9 +24,10 @@ public class AgendaView implements CalendarView {
 		return "Agenda";
 	}
 
-	public JTextPane getView() {
-		return textPane;
+	public JComponent getView() {
+		return new JLabel(new ImageIcon(getClass().getResource("Agenda.png")));
 	}
+
 	public void attach(Controller controller) {
 		this.controller = controller;
 	}

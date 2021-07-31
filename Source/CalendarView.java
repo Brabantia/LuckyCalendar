@@ -5,7 +5,7 @@
  *	@version 1.00 2021/7/17
 **/
 
-import javax.swing.*;
+import javax.swing.JComponent;
 
 public interface CalendarView {
 	public String getLabel();
