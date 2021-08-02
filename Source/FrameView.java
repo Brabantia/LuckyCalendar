@@ -2,14 +2,11 @@
  *	@(#)FrameView.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/31
+ *	@version 1.00 2021/8/2
 **/
 
-
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -17,14 +14,21 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.time.LocalDate;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 public class FrameView extends JFrame {
 	private final MiniCalendarView miniCal;
 	private final CalendarView[] views;
 	private final AgendaView agenda;
 	private final JPanel viewPanel = new JPanel();
-	private final JButton todayButton = new JButton("Today");
-	private final JButton leftButton = new JButton("<");
-	private final JButton rightButton = new JButton(">");
 	private final JButton createButton = new JButton("Create");
 	private final JButton fromFileButton = new JButton("From File");
 	private final JButton[] viewButtons;
@@ -34,7 +38,7 @@ public class FrameView extends JFrame {
 
 	public FrameView() {
 		this.date = LocalDate.now();
-		this.miniCal = new MiniCalendarView();
+		this.miniCal = new MiniCalendarView(this.date);
 		this.agenda = new AgendaView();
 		this.views = new CalendarView[] {
 			new DailyView(), new WeeklyView(), new MonthlyView(), this.agenda
@@ -49,18 +53,6 @@ public class FrameView extends JFrame {
 		JPanel overviewPanel = new JPanel();
 		JPanel eventViewPanel = new JPanel();
 
-		monthButtonPanel.add(this.leftButton);
-		monthButtonPanel.add(this.todayButton);
-		monthButtonPanel.add(this.rightButton);
-		rightButton.addActionListener(event -> {
-			nextMonth();
-		});
-		leftButton.addActionListener(event -> {
-			previousMonth();
-		});
-		todayButton.addActionListener(event -> {
-			setDate(LocalDate.now());
-		});
 		viewButtons = new JButton[this.views.length];
 		for (int a = 0; a < this.views.length; ++a) {
 			viewButtons[a] = new JButton(this.views[a].getLabel());
@@ -111,14 +103,6 @@ public class FrameView extends JFrame {
 
 	private void exit() {
 		this.controller.exit();
-	}
-
-	private void nextMonth() {
-		setDate(this.date.plusMonths(1));
-	}
-
-	private void previousMonth() {
-		setDate(this.date.minusMonths(1));
 	}
 
 	private void createEvent() {
