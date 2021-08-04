@@ -23,10 +23,11 @@ import javax.swing.SwingConstants;
 public class MiniCalendarView extends JPanel {
 	private Controller controller;
 	private LocalDate date;
+	private boolean enabled = true;
 
-	public MiniCalendarView(LocalDate date) {
+	public MiniCalendarView() {
 		super(new BorderLayout());
-		this.date = date;
+		this.date = LocalDate.now();
 		updateCalendar();
 	}
 
@@ -41,6 +42,11 @@ public class MiniCalendarView extends JPanel {
 		JButton today = new JButton("today");
 		JButton left = new JButton("<");
 		JButton right = new JButton(">");
+		months.setEnabled(this.enabled);
+		years.setEnabled(this.enabled);
+		today.setEnabled(this.enabled);
+		left.setEnabled(this.enabled);
+		right.setEnabled(this.enabled);
 
 		today.setBackground(Color.WHITE);
 		left.setBackground(Color.WHITE);
@@ -86,13 +92,25 @@ public class MiniCalendarView extends JPanel {
 		int maxDay = this.date.lengthOfMonth();
 
 		panel.setLayout(new GridLayout(7,7));
-		panel.add(new JLabel("Su", SwingConstants.CENTER));
-		panel.add(new JLabel("Mo", SwingConstants.CENTER));
-		panel.add(new JLabel("Tu", SwingConstants.CENTER));
-		panel.add(new JLabel("We", SwingConstants.CENTER));
-		panel.add(new JLabel("Th", SwingConstants.CENTER));
-		panel.add(new JLabel("Fr", SwingConstants.CENTER));
-		panel.add(new JLabel("Sa", SwingConstants.CENTER));
+		JLabel label = new JLabel("Su", SwingConstants.CENTER);
+		label.setEnabled(this.enabled);
+		panel.add(label);
+		label = new JLabel("Mo", SwingConstants.CENTER);
+		label.setEnabled(this.enabled);
+		panel.add(label);
+		label = new JLabel("Tu", SwingConstants.CENTER);
+		label.setEnabled(this.enabled);
+		panel.add(label);
+		label = new JLabel("We", SwingConstants.CENTER);
+		label.setEnabled(this.enabled);
+		panel.add(label);
+		label = new JLabel("Th", SwingConstants.CENTER);
+		label.setEnabled(this.enabled);
+		panel.add(label);
+		label = new JLabel("Fr", SwingConstants.CENTER);
+		label.setEnabled(this.enabled);
+		panel.add(label);
+		label = new JLabel("Sa", SwingConstants.CENTER);
 
 		int counter = 0;
 		while (counter++ < day.getDayOfWeek().getValue() % 7) {
@@ -101,6 +119,7 @@ public class MiniCalendarView extends JPanel {
 
 		for (int dayCounter = 1; dayCounter <= maxDay; ++dayCounter) {
 			JButton button= new JButton(Integer.toString(dayCounter));
+			button.setEnabled(this.enabled);
 			button.addActionListener(event -> {
 				controller.setDate(LocalDate.of(this.date.getYear(), this.date.getMonth(), Integer.parseInt(event.getActionCommand())));
 			});
@@ -131,5 +150,11 @@ public class MiniCalendarView extends JPanel {
 
 	public void attach(Controller controller) {
 		this.controller = controller;
+	}
+
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		this.enabled = enabled;
+		updateCalendar();
 	}
 }
