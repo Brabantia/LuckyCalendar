@@ -24,7 +24,9 @@ public class Controller {
 		for (int a = 0; a < this.filters.length; ++a) {
 			filterNames[a] = this.filters[a].getName();
 		}
-		frame.setFilters(filterNames);
+		if (frame != null) {
+			frame.setFilters(filterNames);
+		}
 	}
 
 	public void exit() {

@@ -38,7 +38,7 @@ public class FrameView extends JFrame {
 
 	public FrameView() {
 		this.date = LocalDate.now();
-		this.miniCal = new MiniCalendarView(this.date);
+		this.miniCal = new MiniCalendarView();
 		this.agenda = new AgendaView();
 		this.views = new CalendarView[] {
 			new DailyView(), new WeeklyView(), new MonthlyView(), this.agenda
@@ -106,22 +106,8 @@ public class FrameView extends JFrame {
 	}
 
 	private void createEvent() {
-		String name = JOptionPane.showInputDialog("Enter the date name");
-		if (name == null) {
-			return;
-		}
-		String date = JOptionPane.showInputDialog("Enter the date [mm/dd/yyyy]");
-		String startTime = JOptionPane.showInputDialog("Enter the start time [HH:mm]");
-		String endTime = JOptionPane.showInputDialog("Enter the end time [HH:mm]");
-		TimeInterval timeInterval = new TimeInterval(startTime, endTime);
-		Event event = new Event(name, date, timeInterval);
-
-		Event conflict = this.controller.createEvent(event);
-		if (conflict == null) {
-			JOptionPane.showMessageDialog(null, "Add Success!");
-		} else {
-			JOptionPane.showMessageDialog(null, "There's a conflicting event: " + conflict);
-		}
+		CreateEventDialogView dialog = new CreateEventDialogView(this, this.controller);
+		System.out.println(dialog.createEvent(this.date));
 	}
 
 	private void loadFile() {
