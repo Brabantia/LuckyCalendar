@@ -2,10 +2,11 @@
  *	@(#)RecurringEvent.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/17
+ *	@version 1.00 2021/8/5
 **/
 
-import java.time.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class RecurringEvent extends Event {
@@ -33,7 +34,9 @@ public class RecurringEvent extends Event {
 	 *	@param end - the time at which this RecurringEvent ends
 	 *	@param days - the days on which this RecurringEvent occurs
 	**/
-	public RecurringEvent(String name, String description, String location, boolean isAvailable, LocalDate date, TimeInterval time, LocalDate end, DayOfWeek[] days, String... attendees) {
+	public RecurringEvent(String name, String description, String location,
+			boolean isAvailable, LocalDate date, TimeInterval time,
+			LocalDate end, DayOfWeek[] days, String... attendees) {
 		super(name, description, location, isAvailable, time, date, attendees);
 		this.start = date;
 		this.end = end;
@@ -136,7 +139,12 @@ public class RecurringEvent extends Event {
 	 * @Override
 	**/
 	public String toString() {
-		String text = super.getName() + "\n" + daysOfWeek(this.days) + " " + this.getTime();
+		String text = super.getName();
+		text += "\nDescription: " + super.getDescription();
+		text += "\nFree: " + super.isAvailable() + ", Location: " + super.getLocation();
+		text += "\n" + this.start.format(FORMATTER) + " to " + 
+			this.end.format(FORMATTER) + " (" + daysOfWeek(this.days) + ") " + 
+			super.getTime() + "\n";
 
 		// Show dates near today if possible.
 		LocalDate today = LocalDate.now();
@@ -155,9 +163,12 @@ public class RecurringEvent extends Event {
 				text += " ...";
 				break;
 			}
-			text += " " + today.format(FORMATTER);
+			text += today.format(FORMATTER) + " ";
 		}
-		return text;
+		for (String email : super.getAttendees()) {
+			text += "\n" + email;
+		}
+		return text + "\n";
 	}
 	/**
 	 *	Returns a String with a list of the days the RecurringEvent occurs on

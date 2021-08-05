@@ -2,16 +2,19 @@
  *	@(#)WeeklyView.java
  *
  *	@author Bingzhen Chen
- *	@version 1.00 2021/7/28
+ *	@version 1.00 2021/8/5
 **/
 
-import java.awt.*;
-import java.lang.reflect.Array;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import javax.swing.*;
+
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 
 public class WeeklyView extends JPanel implements CalendarView {
 	private Controller controller;
@@ -49,15 +52,12 @@ public class WeeklyView extends JPanel implements CalendarView {
 		for (int i = 0;i < 7;i++){
 			panels[i] = new JPanel();
 			panels[i].setLayout(new FlowLayout(FlowLayout.LEFT));
-			add(panels[i]);
 			JLabel label = new JLabel(strs[i]);
 			label.setPreferredSize(new Dimension(20,40));
 			panels[i].add(label);
+
+			add(panels[i]);
 		}
-
-
-        String text = "";
-        HashSet<Event> set = new HashSet<>();
 
         for (int i = 0;i< 7;i++){
             Event[] list = this.controller.getDayEvents(localDate);
@@ -72,10 +72,5 @@ public class WeeklyView extends JPanel implements CalendarView {
 			panels[i].add(new JScrollPane(textPane));
             localDate = localDate.plusDays(1);
         }
-
-        for (Event e : set) {
-            text += e + "\n";
-        }
-
     }
 }

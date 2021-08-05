@@ -2,21 +2,29 @@
  *	@(#)MonthlyView.java
  *
  *	@author Bingzhen Chen
- *	@version 1.00 2021/7/28
+ *	@version 1.00 2021/8/5
 **/
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.time.LocalDate;
-import javax.swing.*;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 public class MonthlyView extends JPanel implements CalendarView {
 	private Controller controller;
     private LocalDate date;
 
-
-    public MonthlyView() {
+	public MonthlyView() {
 		super();
-		setPreferredSize(new Dimension(430,300));
+		setPreferredSize(new Dimension(430, 300));
         setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 	}
 
@@ -30,10 +38,9 @@ public class MonthlyView extends JPanel implements CalendarView {
     private JPanel getChildPanel() {
         JPanel panel= new JPanel();
         LocalDate day = LocalDate.of(this.date.getYear(), this.date.getMonth(), 1);
-        LocalDate now = LocalDate.now();
         int maxDay = this.date.lengthOfMonth();
 
-        panel.setLayout(new GridLayout(7,7));
+        panel.setLayout(new GridLayout(7, 7));
         panel.add(new JLabel("Su"));
         panel.add(new JLabel("Mo"));
         panel.add(new JLabel("Tu"));
@@ -49,27 +56,13 @@ public class MonthlyView extends JPanel implements CalendarView {
 
         for (int dayCounter = 1; dayCounter <= maxDay; ++dayCounter) {
             JButton button= new JButton(Integer.toString(dayCounter));
-//            button.addActionListener(event -> {
-//                controller.setDate(LocalDate.of(this.date.getYear(), this.date.getMonth(), Integer.parseInt(event.getActionCommand())));
-//
-//            });
+            button.setEnabled(false);
 
-            System.out.println(controller.getDayEvents(day) );
-            System.out.println(controller.getDayEvents(day).length);
             if (controller.getDayEvents(day) != null && controller.getDayEvents(day).length>0 ) {
                 button.setBackground(Color.gray);
-
-            }else {
+            } else {
                 button.setBackground(Color.WHITE);
-
             }
-//            if (day.isEqual(now)) {
-//                button.setBackground(Color.GRAY);
-//            } else if (day.isEqual(this.date)) {
-//                button.setBackground(Color.YELLOW);
-//            } else {
-//                button.setBackground(Color.WHITE);
-//            }
             day = day.plusDays(1);
 
             panel.add(button);
@@ -98,35 +91,4 @@ public class MonthlyView extends JPanel implements CalendarView {
 	public JComponent getView() {
 		return this;
 	}
-
-//	public void attach(Controller controller) {
-//		this.controller = controller;
-//	}
-//
-//	public void setDate(LocalDate date) {
-//        StringBuffer sb = new StringBuffer("");
-//        sb.append("\t" + date.getMonth() + " " + date.getYear() + "\n");
-//        sb.append("  Su  Mo  Tu  We  Th  Fr  Sa" + "\n");
-//
-//        LocalDate oneDay = LocalDate.of(date.getYear(), date.getMonth(), 1);
-//
-//        for (int i = 0; i < oneDay.getDayOfWeek().getValue() % 7; i++) {
-//            sb.append("    ");
-//        }
-//
-//        LocalDate temp = LocalDate.of(date.getYear(), date.getMonth(), 1 + 0);
-//        for (int i = 1; i <= date.getMonth().maxLength(); i++) {
-//            if (this.controller.getDayEvents(temp).length > 0) {
-//                sb.append(String.format("%4s", "[" + i + "]"));
-//            } else {
-//                sb.append(String.format("%4s", i));
-//            }
-//            if ((i + oneDay.getDayOfWeek().getValue()) % 7 == 0) {
-//                sb.append("\n");
-//            }
-//            temp = temp.plusDays(1);
-//        }
-//        sb.append("\n");
-//        super.setText(sb.toString());
-//    }
 }
