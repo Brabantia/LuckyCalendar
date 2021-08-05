@@ -144,7 +144,7 @@ public class RecurringEvent extends Event {
 		text += "\nFree: " + super.isAvailable() + ", Location: " + super.getLocation();
 		text += "\n" + this.start.format(FORMATTER) + " to " + 
 			this.end.format(FORMATTER) + " (" + daysOfWeek(this.days) + ") " + 
-			super.getTime();
+			super.getTime() + "\n";
 
 		// Show dates near today if possible.
 		LocalDate today = LocalDate.now();
@@ -163,7 +163,7 @@ public class RecurringEvent extends Event {
 				text += " ...";
 				break;
 			}
-			text += " " + today.format(FORMATTER);
+			text += today.format(FORMATTER) + " ";
 		}
 		for (String email : super.getAttendees()) {
 			text += "\n" + email;
