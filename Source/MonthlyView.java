@@ -2,24 +2,88 @@
  *	@(#)MonthlyView.java
  *
  *	@author Bingzhen Chen
- *	@version 1.00 2021/7/28
+ *	@version 1.00 2021/8/5
 **/
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.time.LocalDate;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JTextPane;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
-public class MonthlyView extends JTextPane implements CalendarView {
+public class MonthlyView extends JPanel implements CalendarView {
 	private Controller controller;
+    private LocalDate date;
 
 	public MonthlyView() {
 		super();
-		setPreferredSize(new Dimension(430,300));
+		setPreferredSize(new Dimension(430, 300));
         setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 	}
+
+    private void updateCalendar() {
+        super.removeAll();
+        super.setLayout(new BorderLayout());
+        super.add(new JLabel(this.date.getMonth() + " " + this.date.getYear(), SwingConstants.CENTER), BorderLayout.PAGE_START);
+        super.add(getChildPanel(), BorderLayout.CENTER);
+        super.revalidate();
+    }
+
+    private JPanel getChildPanel() {
+        JPanel panel= new JPanel();
+        LocalDate day = LocalDate.of(this.date.getYear(), this.date.getMonth(), 1);
+        int maxDay = this.date.lengthOfMonth();
+
+        panel.setLayout(new GridLayout(7, 7));
+        panel.add(new JLabel("Su", SwingConstants.CENTER));
+        panel.add(new JLabel("Mo", SwingConstants.CENTER));
+        panel.add(new JLabel("Tu", SwingConstants.CENTER));
+        panel.add(new JLabel("We", SwingConstants.CENTER));
+        panel.add(new JLabel("Th", SwingConstants.CENTER));
+        panel.add(new JLabel("Fr", SwingConstants.CENTER));
+        panel.add(new JLabel("Sa", SwingConstants.CENTER));
+
+        int counter = 0;
+        while (counter++ < day.getDayOfWeek().getValue() % 7) {
+            panel.add(new JLabel());
+        }
+
+        for (int dayCounter = 1; dayCounter <= maxDay; ++dayCounter) {
+            JButton button= new JButton(Integer.toString(dayCounter));
+            button.setEnabled(false);
+
+            if (controller.getDayEvents(day) != null && controller.getDayEvents(day).length>0 ) {
+                button.setBackground(Color.gray);
+            } else {
+                button.setBackground(Color.WHITE);
+            }
+            day = day.plusDays(1);
+
+            panel.add(button);
+        }
+
+        counter += maxDay;
+        while(counter++ <= 42) {
+            panel.add(new JLabel());
+        }
+        return panel;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+        updateCalendar();
+    }
+
+    public void attach(Controller controller) {
+        this.controller = controller;
+    }
 
 	public String getLabel() {
 		return "Month";
@@ -28,36 +92,4 @@ public class MonthlyView extends JTextPane implements CalendarView {
 	public JComponent getView() {
 		return this;
 	}
-
-	public void attach(Controller controller) {
-		this.controller = controller;
-	}
-
-	public void setDate(LocalDate date) {
-        StringBuffer sb = new StringBuffer("");
-        sb.append("\t" + date.getMonth() + " " + date.getYear() + "\n");
-        sb.append("  Su  Mo  Tu  We  Th  Fr  Sa" + "\n");
-
-        LocalDate oneDay = LocalDate.of(date.getYear(), date.getMonth(), 1);
-
-        for (int i = 0; i < oneDay.getDayOfWeek().getValue() % 7; i++) {
-            sb.append("    ");
-        }
-
-        LocalDate temp = LocalDate.of(date.getYear(), date.getMonth(), 1 + 0);
-        for (int i = 1; i <= date.getMonth().maxLength(); i++) {
-            if (this.controller.getDayEvents(temp).length > 0) {
-                sb.append(String.format("%4s", "[" + i + "]"));
-            } else {
-                sb.append(String.format("%4s", i));
-            }
-            if ((i + oneDay.getDayOfWeek().getValue()) % 7 == 0) {
-                sb.append("\n");
-            }
-            temp = temp.plusDays(1);
-        }
-        sb.append("\n");
-        super.setText(sb.toString());
-		super.setCaretPosition(0);
-    }
 }
