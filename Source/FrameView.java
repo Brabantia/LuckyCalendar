@@ -2,11 +2,13 @@
  *	@(#)FrameView.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/17
+ *	@version 1.00 2021/7/31
 **/
 
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,23 +52,14 @@ public class FrameView extends JFrame {
 		monthButtonPanel.add(this.leftButton);
 		monthButtonPanel.add(this.todayButton);
 		monthButtonPanel.add(this.rightButton);
-		rightButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				nextMonth();
-			}
+		rightButton.addActionListener(event -> {
+			nextMonth();
 		});
-		leftButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				previousMonth();
-			}
+		leftButton.addActionListener(event -> {
+			previousMonth();
 		});
-		todayButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setDate(LocalDate.now());
-			}
+		todayButton.addActionListener(event -> {
+			setDate(LocalDate.now());
 		});
 		viewButtons = new JButton[this.views.length];
 		for (int a = 0; a < this.views.length; ++a) {
@@ -77,7 +70,7 @@ public class FrameView extends JFrame {
 			});
 		}
 
-		eventButtonPanel.add(new JLabel(new ImageIcon(getClass().getResource("/Icon.png"))));
+		eventButtonPanel.add(new JLabel(new ImageIcon(getClass().getResource("Icon.png"))));
 		eventButtonPanel.add(this.createButton);
 		eventButtonPanel.add(this.fromFileButton);
 
@@ -87,11 +80,8 @@ public class FrameView extends JFrame {
 				createEvent();
 			}
 		});
-		fromFileButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				loadFile();
-			}
+		fromFileButton.addActionListener(event -> {
+			loadFile();
 		});
 
 		overviewPanel.setLayout(new BorderLayout());
@@ -151,12 +141,24 @@ public class FrameView extends JFrame {
 	}
 
 	private void loadFile() {
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.showOpenDialog(this);
-		File file = fileChooser.getSelectedFile();
-		if(file != null) {
-			this.controller.addEventsFromFile(file.getAbsolutePath());
-			JOptionPane.showMessageDialog(null, "Import file success!");
+		JFileChooser chooser = new JFileChooser();
+		// Set chooser to current working directory.
+		chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+		chooser.setFileFilter(new FileNameExtensionFilter("Text Files", "txt"));
+
+		if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+			return;
+		}
+
+		File file = chooser.getSelectedFile();
+		if (file == null) {
+			JOptionPane.showMessageDialog(this, "No file selected");
+			return;
+		}
+		if (this.controller.addEventsFromFile(file.getAbsolutePath())) {
+			JOptionPane.showMessageDialog(this, "Successfully imported events from file");
+		} else {
+			JOptionPane.showMessageDialog(this, "Failure to load or parse events from file");
 		}
 	}
 

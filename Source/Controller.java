@@ -2,7 +2,7 @@
  *	@(#)Controller.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/30
+ *	@version 1.00 2021/7/31
 **/
 
 import java.time.LocalDate;
@@ -37,7 +37,8 @@ public class Controller {
 		System.exit(0);
 	}
 
-	public void addEventsFromFile(String path) {
+	public boolean addEventsFromFile(String file) {
+		return model.addFromFile(file);
 	}
 
 	/**
@@ -60,7 +61,7 @@ public class Controller {
 	public Event[] getAllEvents(String filter) {
 		return this.model.getEvents();
 	}
-	
+
 	/**
 	 *	Set the view to the specified date. Can be called by the other views.
 	**/

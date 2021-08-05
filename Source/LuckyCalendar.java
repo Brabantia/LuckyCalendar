@@ -2,18 +2,23 @@
  *	@(#)LuckyCalendar.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/30
+ *	@version 1.00 2021/7/31
 **/
 
-import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 public class LuckyCalendar {
-	public static final String DATA_PATH = "input.txt";
+	public static final String INPUT_FILE = "input.txt";
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws URISyntaxException {
 		CalendarModel model = new CalendarModel();
-		if (!model.addFromFile(LuckyCalendar.class.getResource(DATA_PATH).getPath())) {
-			System.err.println("Failed to load from file: " + DATA_PATH);
+
+		URL url = LuckyCalendar.class.getResource(INPUT_FILE);
+		if (url == null) {
+			System.err.println("Failed to load from file: " + INPUT_FILE);
+		} else {
+			model.addFromFile(url.toURI().getSchemeSpecificPart());
 		}
 
 		FrameView frame = new FrameView();

@@ -5,17 +5,39 @@
  *	@version 1.00 2021/7/28
 **/
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.time.LocalDate;
-import javax.swing.JComponent;
-import javax.swing.JTextPane;
+import javax.swing.*;
 
-public class AgendaView extends JTextPane implements CalendarView {
+public class AgendaView extends JPanel implements CalendarView {
 	private Controller controller;
+	private JButton button;
+	private JTextField textField1,textField2;
+	private JTextPane textPane;
 
 	public AgendaView() {
 		super();
+		setLayout(new BorderLayout());
 		setPreferredSize(new Dimension(430,300));
+		JPanel topPanel = new JPanel();
+		topPanel.add(new JLabel("Begin date"));
+		topPanel.add(textField1 = new JTextField(10));
+		topPanel.add(new JLabel("End date"));
+		topPanel.add(textField2 = new JTextField(10));
+		add(topPanel,"North");
+
+		topPanel.add(button = new JButton("Check"));
+
+		textField1.setText(LocalDate.now().format(Event.FORMATTER));//.(LocalDate.now(), Event.FORMATTER);
+		textField2.setText(LocalDate.now().format(Event.FORMATTER));//LocalDate.(LocalDate.now(), Event.FORMATTER);
+
+		add(new JScrollPane(textPane = new JTextPane()),"Center");
+
+		button.addActionListener(actionEvent -> {
+			setDate(LocalDate.now());
+		});
+
+
 	}
 
 	public String getLabel() {
@@ -32,12 +54,32 @@ public class AgendaView extends JTextPane implements CalendarView {
 
 	public void setFilters(String... filters) {
 	}
-	
+
 	public void setDate(LocalDate date) {
-        StringBuffer sb = new StringBuffer("");
-		for (Event event : this.controller.getDayEvents(date)){
-			sb.append(event+"\n");
+		if (textField1.getText().equals("")){
+			return;
 		}
-        super.setText(sb.toString());
+		try {
+			LocalDate localDate1 = LocalDate.parse(textField1.getText().trim(),Event.FORMATTER);
+			LocalDate localDate2 = LocalDate.parse(textField2.getText().trim(),Event.FORMATTER);
+			StringBuffer sb = new StringBuffer("");
+			while (localDate1.compareTo(localDate2) <=0){
+				System.out.println(localDate1);
+				for (Event event : this.controller.getDayEvents(localDate1)){
+					sb.append(event+"\n");
+				}
+				localDate1 = localDate1.plusDays(1);
+			}
+			textPane.setText(sb.toString());
+
+		}catch (Exception e){
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"Please input formatted date [MM/dd/yyyy]");
+		}
+
+
+
+
+//        super.setText(sb.toString());
     }
 }

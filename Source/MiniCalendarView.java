@@ -1,114 +1,89 @@
 /**
  *	@(#)MiniCalendarView.java
  *
- *	@author Bingzhen Chen
- *	@version 1.00 2021/7/28
+ *	@author Shyam Vyas
+ *	@version 1.00 2021/7/27
 **/
 
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.time.LocalDate;
+
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 
 public class MiniCalendarView extends JPanel {
-	private final static String week[] = {"Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"};
-	private JLabel dayLabel[][] = new JLabel[6][7];
-	private JLabel monthLabel;
 	private Controller controller;
 	private LocalDate date;
 
 	public MiniCalendarView() {
+		super(new BorderLayout());
 		this.date = LocalDate.now();
-
-		setLayout(new BorderLayout());
-
-		JPanel northPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		monthLabel = new JLabel();
-		northPanel.add(monthLabel);
-
-		add(northPanel, BorderLayout.NORTH);
-
-		JPanel centerPanel = new JPanel(new GridLayout(7, 7, 1, 1));
-		centerPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-		for (String s : week) {
-			JLabel weekButton = new JLabel(s);
-			weekButton.setBackground(Color.WHITE);
-			weekButton.setHorizontalAlignment(JLabel.CENTER);
-			centerPanel.add(weekButton);
-		}
-		for (int i = 0; i < 6; i++) {
-			for (int j = 0; j < 7; j++) {
-				JPanel tempJpanel = new JPanel();
-				dayLabel[i][j] = new JLabel();
-				tempJpanel.setBackground(Color.white);
-				dayLabel[i][j].setHorizontalAlignment(JLabel.CENTER);
-
-				centerPanel.add(tempJpanel);
-				tempJpanel.add(dayLabel[i][j]);
-
-				dayLabel[i][j].addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseReleased(MouseEvent e) {
-						for (int i = 0; i < 6; i++) {
-							for (int j = 0; j < 7; j++) {
-								dayLabel[i][j].getParent().setBackground(Color.white);
-							}
-						}
-						((JLabel)e.getSource()).getParent().setBackground(Color.gray);
-
-						controller.setDate(LocalDate.of(date.getYear(), date.getMonth(), Integer.parseInt(((JLabel)e.getSource()).getText())));
-					}
-				});
-			}
-		}
-		add(centerPanel, BorderLayout.CENTER);
-
-		JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		add(southPanel, BorderLayout.SOUTH);
 		updateCalendar();
 	}
 
-	private void updateCalendar() {
-		LocalDate firstOfMonth = this.date.minusDays(this.date.getDayOfMonth()-1);
-		int i = 0, j = firstOfMonth.getDayOfWeek().getValue() % 7;
-		int maxDay = this.date.lengthOfMonth();
-
-		for (int k = 0; k < j; k++) {
-			dayLabel[i][j].getParent().setBackground(Color.WHITE);
-			dayLabel[0][k].setText("");
-		}
-
-		for (int k = 1; k <= maxDay; k++) {
-			dayLabel[i][j].getParent().setBackground(this.date.getDayOfMonth() != k ? Color.WHITE : Color.GRAY);
-			dayLabel[i][j].setText(Integer.toString(k));
-			if (j++ == 6) {
-				i++;
-				j = 0;
-			}
-		}
-		while (i < 6) {
-			dayLabel[i][j].getParent().setBackground(Color.WHITE);
-			dayLabel[i][j].setText("");
-			if (j++ == 6) {
-				i++;
-				j = 0;
-			}
-		}
-		monthLabel.setText(date.getMonth() + "  " + date.getYear());
-	}
-	
-	public JComponent getView() {
+	public JPanel getView() {
 		return this;
 	}
 
-	public void attach(Controller controller) {
-		this.controller = controller;
+	private void updateCalendar() {
+		super.removeAll();
+		super.add(new JLabel(this.date.getMonth() + " " + this.date.getYear(), SwingConstants.CENTER), BorderLayout.CENTER);
+		super.add(getChildPanel(), BorderLayout.PAGE_END);
+		super.revalidate();
+	}
+
+	private JPanel getChildPanel() {
+		JPanel panel= new JPanel();
+		LocalDate day = LocalDate.of(this.date.getYear(), this.date.getMonth(), 1);
+		LocalDate now = LocalDate.now();
+		int maxDay = this.date.lengthOfMonth();
+
+		panel.setLayout(new GridLayout(7,7));
+		panel.add(new JLabel("Su"));
+		panel.add(new JLabel("Mo"));
+		panel.add(new JLabel("Tu"));
+		panel.add(new JLabel("We"));
+		panel.add(new JLabel("Th"));
+		panel.add(new JLabel("Fr"));
+		panel.add(new JLabel("Sa"));
+
+		int counter = 0;
+		while (counter++ < day.getDayOfWeek().getValue() % 7) {
+			panel.add(new JLabel());
+		}
+
+		for (int dayCounter = 1; dayCounter <= maxDay; ++dayCounter) {
+			JButton button= new JButton(Integer.toString(dayCounter));
+			button.addActionListener(event -> {
+				controller.setDate(LocalDate.of(this.date.getYear(), this.date.getMonth(), Integer.parseInt(event.getActionCommand())));
+			});
+
+			if (day.isEqual(now)) {
+				button.setBackground(Color.GRAY);
+			} else if (day.isEqual(this.date)) {
+				button.setBackground(Color.YELLOW);
+			} else {
+				button.setBackground(Color.WHITE);
+			}
+			day = day.plusDays(1);
+
+			panel.add(button);
+		}
+
+		counter += maxDay;
+		while(counter++ <= 42) {
+			panel.add(new JLabel());
+		}
+		return panel;
 	}
 
 	public void setDate(LocalDate date) {
 		this.date = date;
 		updateCalendar();
+	}
+
+	public void attach(Controller controller) {
+		this.controller = controller;
 	}
 }
