@@ -1,18 +1,21 @@
 /**
  *	@(#)AgendaView.java
  *
- *	@author Yorick van de Water
- *	@version 1.00 2021/7/17
+ *	@author Bingzhen Chen
+ *	@version 1.00 2021/7/28
 **/
-package project151;
-import javax.swing.*;
 
-public class AgendaView implements CalendarView {
-	private final FrameView frame;
+import java.awt.Dimension;
+import java.time.LocalDate;
+import javax.swing.JComponent;
+import javax.swing.JTextPane;
+
+public class AgendaView extends JTextPane implements CalendarView {
 	private Controller controller;
 
-	public AgendaView(FrameView frame) {
-		this.frame = frame;
+	public AgendaView() {
+		super();
+		setPreferredSize(new Dimension(430,300));
 	}
 
 	public String getLabel() {
@@ -20,7 +23,7 @@ public class AgendaView implements CalendarView {
 	}
 
 	public JComponent getView() {
-		return new JLabel(new ImageIcon(getClass().getResource("Agenda.png")));
+		return this;
 	}
 
 	public void attach(Controller controller) {
@@ -29,4 +32,12 @@ public class AgendaView implements CalendarView {
 
 	public void setFilters(String... filters) {
 	}
+
+	public void setDate(LocalDate date) {
+        StringBuffer sb = new StringBuffer("");
+		for (Event event : this.controller.getDayEvents(date)){
+			sb.append(event+"\n");
+		}
+        super.setText(sb.toString());
+    }
 }

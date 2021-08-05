@@ -2,12 +2,13 @@
  *	@(#)Controller.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/17
+ *	@version 1.00 2021/7/31
 **/
-package project151;
-import java.time.*;
+
+import java.time.LocalDate;
 
 public class Controller {
+	public static final String OUTPUT_FILE = "output.txt";
 	private final CalendarModel model;
 	private final FrameView frame;
 	private final EventFilter[] filters;
@@ -23,15 +24,26 @@ public class Controller {
 		for (int a = 0; a < this.filters.length; ++a) {
 			filterNames[a] = this.filters[a].getName();
 		}
-		frame.setFilters(filterNames);
+		if (frame != null) {
+			frame.setFilters(filterNames);
+		}
+	}
+	public CalendarModel getModel() {
+		return model;
 	}
 
 	public void exit() {
-		this.model.saveToFile("");
+		try{
+			this.model.saveToFile(OUTPUT_FILE);
+		} catch(Exception e) {
+			System.err.println("Failed to save file: " + OUTPUT_FILE);
+			e.printStackTrace();
+		}
 		System.exit(0);
 	}
 
-	public void addEventsFromFile(String path) {
+	public boolean addEventsFromFile(String file) {
+		return model.addFromFile(file);
 	}
 
 	/**
@@ -44,19 +56,22 @@ public class Controller {
 	}
 
 	public Event[] getDayEvents(LocalDate date) {
-		return null;
+		return (new DayOnlyFilter(date)).filter(this.model.getEvents());
 	}
 
 	public Event[] getWeekEvents(LocalDate date) {
-		return null;
-	}
-
-	public Event[] getMonthEvents(LocalDate date) {
-		return null;
+		return (new WeekOnlyFilter(date)).filter(this.model.getEvents());
 	}
 
 	public Event[] getAllEvents(String filter) {
-		return null;
+		return this.model.getEvents();
+	}
+
+	/**
+	 *	Set the view to the specified date. Can be called by the other views.
+	**/
+	public void setDate(LocalDate date) {
+		this.frame.setDate(date);
 	}
 
 	/**
