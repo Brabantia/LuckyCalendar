@@ -30,8 +30,9 @@ public class MonthlyView extends JPanel implements CalendarView {
 
     private void updateCalendar() {
         super.removeAll();
-        super.add(new JLabel(this.date.getMonth() + " " + this.date.getYear(), SwingConstants.CENTER), BorderLayout.CENTER);
-        super.add(getChildPanel(), BorderLayout.PAGE_END);
+        super.setLayout(new BorderLayout());
+        super.add(new JLabel(this.date.getMonth() + " " + this.date.getYear(), SwingConstants.CENTER), BorderLayout.PAGE_START);
+        super.add(getChildPanel(), BorderLayout.CENTER);
         super.revalidate();
     }
 
@@ -41,13 +42,13 @@ public class MonthlyView extends JPanel implements CalendarView {
         int maxDay = this.date.lengthOfMonth();
 
         panel.setLayout(new GridLayout(7, 7));
-        panel.add(new JLabel("Su"));
-        panel.add(new JLabel("Mo"));
-        panel.add(new JLabel("Tu"));
-        panel.add(new JLabel("We"));
-        panel.add(new JLabel("Th"));
-        panel.add(new JLabel("Fr"));
-        panel.add(new JLabel("Sa"));
+        panel.add(new JLabel("Su", SwingConstants.CENTER));
+        panel.add(new JLabel("Mo", SwingConstants.CENTER));
+        panel.add(new JLabel("Tu", SwingConstants.CENTER));
+        panel.add(new JLabel("We", SwingConstants.CENTER));
+        panel.add(new JLabel("Th", SwingConstants.CENTER));
+        panel.add(new JLabel("Fr", SwingConstants.CENTER));
+        panel.add(new JLabel("Sa", SwingConstants.CENTER));
 
         int counter = 0;
         while (counter++ < day.getDayOfWeek().getValue() % 7) {
