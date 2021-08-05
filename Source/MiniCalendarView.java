@@ -111,6 +111,7 @@ public class MiniCalendarView extends JPanel {
 		label.setEnabled(this.enabled);
 		panel.add(label);
 		label = new JLabel("Sa", SwingConstants.CENTER);
+		panel.add(label);
 
 		int counter = 0;
 		while (counter++ < day.getDayOfWeek().getValue() % 7) {
