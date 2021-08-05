@@ -2,7 +2,7 @@
  *	@(#)FrameView.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/8/2
+ *	@version 1.00 2021/8/5
 **/
 
 import java.awt.BorderLayout;
@@ -106,8 +106,19 @@ public class FrameView extends JFrame {
 	}
 
 	private void createEvent() {
-		CreateEventDialogView dialog = new CreateEventDialogView(this, this.controller);
-		System.out.println(dialog.createEvent(this.date));
+		CreateEventDialogView dialog = new CreateEventDialogView(this);
+		Event newEvent = dialog.createEvent(this.date);
+		if (newEvent == null) {
+			return;
+		}
+
+		Event conflict = this.controller.createEvent(newEvent);
+		if (conflict == null) {
+			return;
+		}
+		JOptionPane.showMessageDialog(this,
+			"New event conflicts with existing event: " + conflict,
+			"Conflict event", JOptionPane.ERROR_MESSAGE);
 	}
 
 	private void loadFile() {
@@ -142,7 +153,8 @@ public class FrameView extends JFrame {
 
 	public void display() {
 		refreshData();
-		setVisible(true);
+		super.setLocationRelativeTo(null);
+		super.setVisible(true);
 	}
 
 	public void setFilters(String... filters) {
