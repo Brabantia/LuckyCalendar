@@ -71,7 +71,6 @@ public class AgendaView extends JPanel implements CalendarView {
 			LocalDate localDate2 = LocalDate.parse(textField2.getText().trim(),Event.FORMATTER);
 			StringBuffer sb = new StringBuffer("");
 			while (localDate1.compareTo(localDate2) <=0){
-				System.out.println(localDate1);
 				for (Event event : this.controller.getDayEvents(localDate1)){
 					sb.append(event+"\n");
 				}
