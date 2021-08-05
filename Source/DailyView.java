@@ -7,6 +7,7 @@
 
 import java.awt.Dimension;
 import java.time.LocalDate;
+
 import javax.swing.JComponent;
 import javax.swing.JTextPane;
 
@@ -36,5 +37,6 @@ public class DailyView extends JTextPane implements CalendarView {
             text += e + "\n";
         }
         super.setText(text);
+		super.setCaretPosition(0);
     }
 }

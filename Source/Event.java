@@ -2,11 +2,11 @@
  *	@(#)Event.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/17
+ *	@version 1.00 2021/8/5
 **/
 
-import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Event {
 	public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
@@ -38,7 +38,11 @@ public class Event {
 		this(name, "", "", true, time, date);
 	}
 
-	public Event(String name, String description, String location, boolean isAvailable, TimeInterval time, LocalDate date, String... attendees) {
+	public Event(String name, String description, String location, 
+			boolean isAvailable, TimeInterval time, LocalDate date, String... attendees) {
+		if (name == null || name.length() == 0) {
+			throw new RuntimeException("Event name must exist");
+		}
 		this.name = name;
 		this.description = description;
 		this.isAvailable = isAvailable;
@@ -128,7 +132,15 @@ public class Event {
 	**/
 	@Override
 	public String toString() {
-		return this.date.format(FORMATTER) + " " + this.time + " " + this.name;
+		String text = getName();
+		text += "\nDescription: " + getDescription();
+		text += "\nFree: " + isAvailable() + ", Location: " + getLocation();
+		text += "\n" + this.date.format(FORMATTER) + " " + this.getTime();
+
+		for (String email : getAttendees()) {
+			text += "\n" + email;
+		}
+		return text + "\n";
 	}
 	/**
 	 *	Returns an Event decoded from two strings in a saved file.

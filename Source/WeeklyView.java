@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashSet;
+
 import javax.swing.JComponent;
 import javax.swing.JTextPane;
 
@@ -53,5 +54,6 @@ public class WeeklyView extends JTextPane implements CalendarView {
         }
 
         super.setText(text);
+		super.setCaretPosition(0);
     }
 }

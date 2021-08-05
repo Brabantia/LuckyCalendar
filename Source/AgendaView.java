@@ -7,6 +7,7 @@
 
 import java.awt.Dimension;
 import java.time.LocalDate;
+
 import javax.swing.JComponent;
 import javax.swing.JTextPane;
 
@@ -39,5 +40,6 @@ public class AgendaView extends JTextPane implements CalendarView {
 			sb.append(event+"\n");
 		}
         super.setText(sb.toString());
+		super.setCaretPosition(0);
     }
 }

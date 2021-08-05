@@ -8,6 +8,7 @@
 import java.awt.Dimension;
 import java.awt.Font;
 import java.time.LocalDate;
+
 import javax.swing.JComponent;
 import javax.swing.JTextPane;
 
@@ -57,5 +58,6 @@ public class MonthlyView extends JTextPane implements CalendarView {
         }
         sb.append("\n");
         super.setText(sb.toString());
+		super.setCaretPosition(0);
     }
 }
