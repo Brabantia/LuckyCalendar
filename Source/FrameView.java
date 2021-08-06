@@ -6,6 +6,7 @@
 **/
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,18 +22,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class FrameView extends JFrame {
 	private final MiniCalendarView miniCal;
 	private final CalendarView[] views;
 	private final AgendaView agenda;
-	private final JPanel viewPanel = new JPanel();
+	private final CardLayout viewLayout = new CardLayout();
+	private final JPanel viewPanel = new JPanel(viewLayout);
 	private final JButton createButton = new JButton("Create");
 	private final JButton fromFileButton = new JButton("From File");
 	private final JButton[] viewButtons;
-	private CalendarView currentView;
 	private Controller controller;
 	private LocalDate date;
 
@@ -44,9 +44,6 @@ public class FrameView extends JFrame {
 			new DailyView(), new WeeklyView(), new MonthlyView(), this.agenda
 		};
 
-		this.currentView = this.views[0];
-		this.viewPanel.add(new JScrollPane(this.currentView.getView()));
-
 		JPanel monthButtonPanel = new JPanel();
 		JPanel viewButtonPanel = new JPanel();
 		JPanel eventButtonPanel = new JPanel();
@@ -55,6 +52,7 @@ public class FrameView extends JFrame {
 
 		viewButtons = new JButton[this.views.length];
 		for (int a = 0; a < this.views.length; ++a) {
+			this.viewPanel.add(this.views[a].getView(), this.views[a].getLabel());
 			viewButtons[a] = new JButton(this.views[a].getLabel());
 			viewButtonPanel.add(viewButtons[a]);
 			viewButtons[a].addActionListener(event -> {
@@ -77,12 +75,12 @@ public class FrameView extends JFrame {
 		});
 
 		overviewPanel.setLayout(new BorderLayout());
-		overviewPanel.add(eventButtonPanel, BorderLayout.NORTH);
+		overviewPanel.add(eventButtonPanel, BorderLayout.PAGE_START);
 		overviewPanel.add(monthButtonPanel, BorderLayout.CENTER);
-		overviewPanel.add(miniCal.getView(), BorderLayout.SOUTH);
+		overviewPanel.add(miniCal.getView(), BorderLayout.PAGE_END);
 
 		eventViewPanel.setLayout(new BorderLayout());
-		eventViewPanel.add(viewButtonPanel, BorderLayout.NORTH);
+		eventViewPanel.add(viewButtonPanel, BorderLayout.PAGE_START);
 		eventViewPanel.add(viewPanel, BorderLayout.CENTER);
 
 		this.setLayout(new FlowLayout());
@@ -97,6 +95,7 @@ public class FrameView extends JFrame {
 		});
 
 		setTitle("Calendar");
+		validate();
 		pack();
 		setResizable(false);
 	}
@@ -163,6 +162,9 @@ public class FrameView extends JFrame {
 
 	public void refreshData() {
 		setDate(this.date);
+		for (CalendarView view : this.views) {
+			view.refreshData();
+		}
 	}
 
 	/**
@@ -179,13 +181,9 @@ public class FrameView extends JFrame {
 	public void setView(String name) {
 		if (name == null) return;
 
-		for (CalendarView view : this.views) {
-			if (name.equals(view.getLabel())) {
-				this.viewPanel.removeAll();
-				this.currentView = view;
-				this.viewPanel.add(new JScrollPane(this.currentView.getView()));
-				this.viewPanel.revalidate();
-			}
-		}
+		this.viewLayout.show(this.viewPanel, name);
+		refreshData();
+		super.revalidate();
+		super.repaint();
 	}
 }

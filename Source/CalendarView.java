@@ -13,4 +13,5 @@ public interface CalendarView {
 	public JComponent getView();
 	public void attach(Controller listener);
 	public void setDate(LocalDate date);
+	public void refreshData();
 }

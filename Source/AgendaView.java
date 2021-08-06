@@ -67,9 +67,9 @@ public class AgendaView extends JPanel implements CalendarView {
 		topPanel.add(new JLabel("End"));
 		topPanel.add(endDate);
 		topPanel.add(filterList);
-		add(topPanel,"North");
+		add(topPanel, BorderLayout.PAGE_START);
 
-		add(new JScrollPane(textPane = new JTextPane()), "Center");
+		add(new JScrollPane(textPane = new JTextPane()), BorderLayout.CENTER);
 	}
 
 	public String getLabel() {

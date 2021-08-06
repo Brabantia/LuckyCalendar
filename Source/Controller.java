@@ -60,10 +60,6 @@ public class Controller {
 		return (new DayOnlyFilter(date)).filter(this.model.getEvents());
 	}
 
-	public Event[] getWeekEvents(LocalDate date) {
-		return (new WeekOnlyFilter(date)).filter(this.model.getEvents());
-	}
-
 	public Event[] getAllEvents(String filter) {
 		return this.model.getEvents();
 	}
