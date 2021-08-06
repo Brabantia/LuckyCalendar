@@ -2,49 +2,74 @@
  *	@(#)AgendaView.java
  *
  *	@author Bingzhen Chen
+ *	@author Yorick van de Water
  *	@version 1.00 2021/8/5
 **/
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
 
-import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
 import javax.swing.JTextPane;
+import javax.swing.SpinnerDateModel;
 
 public class AgendaView extends JPanel implements CalendarView {
-	private Controller controller;
-	private JButton button;
-	private JTextField textField1,textField2;
+	private SpinnerDateModel beginDateModel = new SpinnerDateModel(Date.from(Instant.now()), null, null, Calendar.DAY_OF_YEAR);
+	private SpinnerDateModel endDateModel = new SpinnerDateModel(Date.from(Instant.now()), null, null, Calendar.DAY_OF_YEAR);
+	private JSpinner beginDate = new JSpinner(beginDateModel);
+	private JSpinner endDate = new JSpinner(endDateModel);
 	private JTextPane textPane;
+	private JComboBox<EventFilter> filterList = new JComboBox<>();
+	private Controller controller;
 
 	public AgendaView() {
 		super();
 		setLayout(new BorderLayout());
-		setPreferredSize(new Dimension(430,300));
+		setPreferredSize(new Dimension(430, 300));
+
+		// The dates must be rendered in this format if the spinner is to increment by a day.
+		beginDate.setEditor(new JSpinner.DateEditor(beginDate, "dd MMM yyyy"));
+		endDate.setEditor(new JSpinner.DateEditor(endDate, "dd MMM yyyy"));
+
+		filterList.addActionListener(event -> {
+			if (this.controller != null) {
+				refreshData();
+			}
+		});
+		beginDate.addChangeListener(event -> {
+			if (beginDateModel.getDate().after(endDateModel.getDate())) {
+				beginDate.setValue(endDateModel.getDate());
+				return;
+			}
+			refreshData();
+		});
+		endDate.addChangeListener(event -> {
+			if (endDateModel.getDate().before(beginDateModel.getDate())) {
+				endDate.setValue(beginDateModel.getDate());
+				return;
+			}
+			refreshData();
+		});
+
 		JPanel topPanel = new JPanel();
-		topPanel.add(new JLabel("Begin date"));
-		topPanel.add(textField1 = new JTextField(10));
-		topPanel.add(new JLabel("End date"));
-		topPanel.add(textField2 = new JTextField(10));
+		topPanel.add(new JLabel("Begin"));
+		topPanel.add(beginDate);
+		topPanel.add(new JLabel("End"));
+		topPanel.add(endDate);
+		topPanel.add(filterList);
 		add(topPanel,"North");
 
-		topPanel.add(button = new JButton("Check"));
-
-		textField1.setText(LocalDate.now().format(Event.FORMATTER));
-		textField2.setText(LocalDate.now().format(Event.FORMATTER));
-
-		add(new JScrollPane(textPane = new JTextPane()),"Center");
-
-		button.addActionListener(actionEvent -> {
-			setDate(LocalDate.now());
-		});
+		add(new JScrollPane(textPane = new JTextPane()), "Center");
 	}
 
 	public String getLabel() {
@@ -59,28 +84,46 @@ public class AgendaView extends JPanel implements CalendarView {
 		this.controller = controller;
 	}
 
-	public void setFilters(String... filters) {
+	public void setFilters(EventFilter... filters) {
+		filterList.removeAllItems();
+		for (EventFilter filter : filters) {
+			filterList.addItem(filter);
+		}
+		filterList.setSelectedIndex(0);
 	}
 
 	public void setDate(LocalDate date) {
-		if (textField1.getText().equals("")){
-			return;
-		}
-		try {
-			LocalDate localDate1 = LocalDate.parse(textField1.getText().trim(),Event.FORMATTER);
-			LocalDate localDate2 = LocalDate.parse(textField2.getText().trim(),Event.FORMATTER);
-			StringBuffer sb = new StringBuffer("");
-			while (localDate1.compareTo(localDate2) <=0){
-				for (Event event : this.controller.getDayEvents(localDate1)){
-					sb.append(event+"\n");
-				}
-				localDate1 = localDate1.plusDays(1);
+		beginDate.setValue(Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+		endDate.setValue(Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+		// The beginDate might have failed because it was after the endDate.
+		beginDate.setValue(Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+		
+		refreshData();
+	}
+
+	public void refreshData() {
+		LocalDate begin = beginDateModel.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate end = endDateModel.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		String text = "";
+		while (begin.compareTo(end) <= 0) {
+			EventFilter filter = this.filterList.getItemAt(this.filterList.getSelectedIndex());
+			Event[] daysEvents = filter.filter(this.controller.getDayEvents(begin));
+			String date = Event.FORMATTER.format(begin);
+			begin = begin.plusDays(1);
+			if (daysEvents == null || daysEvents.length == 0) {
+				continue;
 			}
-			textPane.setText(sb.toString());
-			textPane.setCaretPosition(0);
-		}catch (Exception e){
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Please input formatted date [MM/dd/yyyy]");
+
+			text += "====== " + date + " ======\n";
+			for (Event event : daysEvents) {
+				text += "\n" + event;
+			}
+			text += "\n";
 		}
+		while (text.endsWith("\n")) {
+			text = text.substring(0, text.length()-1);
+		}
+		textPane.setText(text);
+		textPane.setCaretPosition(0);
     }
 }
