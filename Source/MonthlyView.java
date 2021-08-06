@@ -28,14 +28,6 @@ public class MonthlyView extends JPanel implements CalendarView {
         setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 	}
 
-    private void updateCalendar() {
-        super.removeAll();
-        super.setLayout(new BorderLayout());
-        super.add(new JLabel(this.date.getMonth() + " " + this.date.getYear(), SwingConstants.CENTER), BorderLayout.PAGE_START);
-        super.add(getChildPanel(), BorderLayout.CENTER);
-        super.revalidate();
-    }
-
     private JPanel getChildPanel() {
         JPanel panel= new JPanel();
         LocalDate day = LocalDate.of(this.date.getYear(), this.date.getMonth(), 1);
@@ -76,9 +68,17 @@ public class MonthlyView extends JPanel implements CalendarView {
         return panel;
     }
 
+    public void refreshData() {
+        super.removeAll();
+        super.setLayout(new BorderLayout());
+        super.add(new JLabel(this.date.getMonth() + " " + this.date.getYear(), SwingConstants.CENTER), BorderLayout.PAGE_START);
+        super.add(getChildPanel(), BorderLayout.CENTER);
+        super.revalidate();
+    }
+
     public void setDate(LocalDate date) {
         this.date = date;
-        updateCalendar();
+        refreshData();
     }
 
     public void attach(Controller controller) {

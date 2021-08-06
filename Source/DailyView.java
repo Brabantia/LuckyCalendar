@@ -9,14 +9,18 @@ import java.awt.Dimension;
 import java.time.LocalDate;
 
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
 
 public class DailyView extends JTextPane implements CalendarView {
 	private Controller controller;
+	private LocalDate date = LocalDate.now();
 
 	public DailyView() {
 		super();
-		setPreferredSize(new Dimension(430,300));
+		super.setText("");
+		setPreferredSize(new Dimension(430, 300));
 	}
 
 	public String getLabel() {
@@ -24,7 +28,9 @@ public class DailyView extends JTextPane implements CalendarView {
 	}
 
 	public JComponent getView() {
-		return this;
+		return new JScrollPane(this,
+			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	}
 
 	public void attach(Controller controller) {
@@ -32,8 +38,13 @@ public class DailyView extends JTextPane implements CalendarView {
 	}
 
 	public void setDate(LocalDate date) {
+		this.date = date;
+		refreshData();
+	}
+
+	public void refreshData() {
         String text = "";
-        for (Event e : this.controller.getDayEvents(date)) {
+        for (Event e : this.controller.getDayEvents(this.date)) {
             text += e + "\n";
         }
         super.setText(text);
