@@ -24,7 +24,7 @@ public class WeeklyView extends JPanel implements CalendarView {
 
 	public WeeklyView() {
 		super();
-		setPreferredSize(new Dimension(430,300));
+		setPreferredSize(new Dimension(FrameView.PREFERRED_WIDTH, FrameView.PREFERRED_HEIGHT));
 		setLayout(new GridLayout(7,1));
 		add(new JLabel());
 		setup();

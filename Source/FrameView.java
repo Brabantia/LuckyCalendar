@@ -25,6 +25,9 @@ import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class FrameView extends JFrame {
+	public static final int PREFERRED_WIDTH = 430;
+	public static final int PREFERRED_HEIGHT = 300;
+
 	private final MiniCalendarView miniCal;
 	private final CalendarView[] views;
 	private final AgendaView agenda;
@@ -165,6 +168,7 @@ public class FrameView extends JFrame {
 		for (CalendarView view : this.views) {
 			view.refreshData();
 		}
+		super.repaint();
 	}
 
 	/**

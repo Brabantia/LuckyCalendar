@@ -33,6 +33,12 @@ public class TimeInterval implements Comparable<TimeInterval> {
 			throw new RuntimeException("Start time must be before the end time");
 		}
 	}
+	public LocalTime getStart() {
+		return this.startTime;
+	}
+	public LocalTime getEnd() {
+		return this.endTime;
+	}
 	/**
 	 *	Checks if this TimeInterval conflicts with the other TimeInterval
 	 *	@param other TimeInterval to check for overlap

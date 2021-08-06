@@ -8,7 +8,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.time.LocalDate;
 
@@ -24,8 +23,7 @@ public class MonthlyView extends JPanel implements CalendarView {
 
 	public MonthlyView() {
 		super();
-		setPreferredSize(new Dimension(430, 300));
-        setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+		setPreferredSize(new Dimension(FrameView.PREFERRED_WIDTH, FrameView.PREFERRED_HEIGHT));
 	}
 
     private JPanel getChildPanel() {

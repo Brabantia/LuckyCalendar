@@ -35,7 +35,7 @@ public class AgendaView extends JPanel implements CalendarView {
 	public AgendaView() {
 		super();
 		setLayout(new BorderLayout());
-		setPreferredSize(new Dimension(430, 300));
+		setPreferredSize(new Dimension(FrameView.PREFERRED_WIDTH, FrameView.PREFERRED_HEIGHT));
 
 		// The dates must be rendered in this format if the spinner is to increment by a day.
 		beginDate.setEditor(new JSpinner.DateEditor(beginDate, "dd MMM yyyy"));
