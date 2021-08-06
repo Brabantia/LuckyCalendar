@@ -2,7 +2,7 @@
  *	@(#)CalendarModel.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/8/5
+ *	@version 1.00 2021/7/31
 **/
 
 import java.io.File;
@@ -106,21 +106,21 @@ public class CalendarModel {
 		this.notifyChanges();
 	}
 
-	public Event conflicts(Event event) {
+	public boolean conflicts(Event event) {
 		if (event == null) {
 			throw new NullPointerException("Event passed in is null.");
 		}
 		for (Event e : this.events) {
 			if (event.conflicts(e)) {
-				return e;
+				return true;
 			}
 		}
 		for (Event e : this.recurringEvents) {
 			if (event.conflicts(e)) {
-				return e;
+				return true;
 			}
 		}
-		return null;
+		return false;
 	}
 
 	public void notifyChanges() {

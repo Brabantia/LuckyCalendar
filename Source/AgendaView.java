@@ -2,21 +2,13 @@
  *	@(#)AgendaView.java
  *
  *	@author Bingzhen Chen
- *	@version 1.00 2021/8/5
+ *	@version 1.00 2021/7/28
 **/
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.*;
 import java.time.LocalDate;
-
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
+import java.util.*;
+import javax.swing.*;
 
 public class AgendaView extends JPanel implements CalendarView {
 	private Controller controller;
@@ -30,21 +22,23 @@ public class AgendaView extends JPanel implements CalendarView {
 		setPreferredSize(new Dimension(430,300));
 		JPanel topPanel = new JPanel();
 		topPanel.add(new JLabel("Begin date"));
-		topPanel.add(textField1 = new JTextField(10));
+		topPanel.add(textField1 = new JTextField(8));
 		topPanel.add(new JLabel("End date"));
-		topPanel.add(textField2 = new JTextField(10));
+		topPanel.add(textField2 = new JTextField(8));
 		add(topPanel,"North");
 
 		topPanel.add(button = new JButton("Check"));
 
-		textField1.setText(LocalDate.now().format(Event.FORMATTER));
-		textField2.setText(LocalDate.now().format(Event.FORMATTER));
+		textField1.setText(LocalDate.now().format(Event.FORMATTER));//.(LocalDate.now(), Event.FORMATTER);
+		textField2.setText(LocalDate.now().format(Event.FORMATTER));//LocalDate.(LocalDate.now(), Event.FORMATTER);
 
 		add(new JScrollPane(textPane = new JTextPane()),"Center");
 
 		button.addActionListener(actionEvent -> {
 			setDate(LocalDate.now());
 		});
+
+
 	}
 
 	public String getLabel() {
@@ -70,17 +64,24 @@ public class AgendaView extends JPanel implements CalendarView {
 			LocalDate localDate1 = LocalDate.parse(textField1.getText().trim(),Event.FORMATTER);
 			LocalDate localDate2 = LocalDate.parse(textField2.getText().trim(),Event.FORMATTER);
 			StringBuffer sb = new StringBuffer("");
+			Set<Event> set = new HashSet<>();
 			while (localDate1.compareTo(localDate2) <=0){
-				for (Event event : this.controller.getDayEvents(localDate1)){
-					sb.append(event+"\n");
-				}
+				set.addAll(Arrays.asList(this.controller.getDayEvents(localDate1)));
 				localDate1 = localDate1.plusDays(1);
 			}
+			for (Event event : set){
+				sb.append(event+"\n");
+			}
 			textPane.setText(sb.toString());
-			textPane.setCaretPosition(0);
+
 		}catch (Exception e){
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Please input formatted date [MM/dd/yyyy]");
+			JOptionPane.showMessageDialog(null,"Please input formatted date [MM/dd/yyyy]");
 		}
+
+
+
+
+//        super.setText(sb.toString());
     }
 }

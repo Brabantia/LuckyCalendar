@@ -2,19 +2,16 @@
  *	@(#)WeeklyView.java
  *
  *	@author Bingzhen Chen
- *	@version 1.00 2021/8/5
+ *	@version 1.00 2021/7/28
 **/
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.*;
+import java.lang.reflect.Array;
 import java.time.LocalDate;
-
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import javax.swing.*;
 
 public class WeeklyView extends JPanel implements CalendarView {
 	private Controller controller;
@@ -41,9 +38,13 @@ public class WeeklyView extends JPanel implements CalendarView {
 	public void setDate(LocalDate date) {
 		LocalDate localDate = LocalDate.of(date.getYear(),date.getMonth(),date.getDayOfMonth());
 
-        while (localDate.getDayOfWeek().getValue() != 1){
-            localDate = localDate.minusDays(1);
-        }
+		if (localDate.getDayOfWeek().getValue() != 7){
+			while (localDate.getDayOfWeek().getValue() != 1){
+				localDate = localDate.minusDays(1);
+			}
+			localDate = localDate.minusDays(1);
+		}
+
 
         removeAll();
         JPanel panels[] = new JPanel[7];
@@ -52,12 +53,15 @@ public class WeeklyView extends JPanel implements CalendarView {
 		for (int i = 0;i < 7;i++){
 			panels[i] = new JPanel();
 			panels[i].setLayout(new FlowLayout(FlowLayout.LEFT));
+			add(panels[i]);
 			JLabel label = new JLabel(strs[i]);
 			label.setPreferredSize(new Dimension(20,40));
 			panels[i].add(label);
-
-			add(panels[i]);
 		}
+
+
+        String text = "";
+        HashSet<Event> set = new HashSet<>();
 
         for (int i = 0;i< 7;i++){
             Event[] list = this.controller.getDayEvents(localDate);
@@ -72,5 +76,10 @@ public class WeeklyView extends JPanel implements CalendarView {
 			panels[i].add(new JScrollPane(textPane));
             localDate = localDate.plusDays(1);
         }
+
+        for (Event e : set) {
+            text += e + "\n";
+        }
+
     }
 }

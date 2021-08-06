@@ -2,7 +2,7 @@
  *	@(#)Controller.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/8/5
+ *	@version 1.00 2021/7/31
 **/
 
 import java.time.LocalDate;
@@ -24,9 +24,7 @@ public class Controller {
 		for (int a = 0; a < this.filters.length; ++a) {
 			filterNames[a] = this.filters[a].getName();
 		}
-		if (frame != null) {
-			frame.setFilters(filterNames);
-		}
+		frame.setFilters(filterNames);
 	}
 
 	public void exit() {
@@ -49,14 +47,6 @@ public class Controller {
 	 *	@return one of the conflicting events, if there is one, null otherwise.
 	**/
 	public Event createEvent(Event event) {
-		Event conflict = this.model.conflicts(event);
-		if (conflict != null) {
-			return conflict;
-		}
-
-		this.model.addEvent(event);
-		calendarUpdated();
-
 		return null;
 	}
 
