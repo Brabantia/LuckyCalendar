@@ -12,11 +12,11 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.time.LocalDate;
 
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
 
 public class MonthlyView extends JPanel implements CalendarView {
 	private Controller controller;
@@ -48,17 +48,23 @@ public class MonthlyView extends JPanel implements CalendarView {
         }
 
         for (int dayCounter = 1; dayCounter <= maxDay; ++dayCounter) {
-            JButton button= new JButton(Integer.toString(dayCounter));
-            button.setEnabled(false);
-
-            if (controller.getDayEvents(day) != null && controller.getDayEvents(day).length>0 ) {
-                button.setBackground(Color.gray);
-            } else {
-                button.setBackground(Color.WHITE);
-            }
+            Event[] events = controller.getDayEvents(day);
             day = day.plusDays(1);
+            JLabel label= new JLabel(Integer.toString(dayCounter), SwingConstants.CENTER);
+            label.setVerticalAlignment(JLabel.TOP);
+            label.setVerticalTextPosition(JLabel.TOP);
+            label.setOpaque(true);
+            label.setBorder(new BevelBorder(BevelBorder.RAISED));
 
-            panel.add(button);
+            if (events != null && events.length > 0) {
+                label.setText("<html><div style=\"text-align:center;\">"+dayCounter +"<br>"+events.length+" events</div></html>");
+                label.setBackground(Color.LIGHT_GRAY);
+            } else {
+                label.setText("<html><div style=\"text-align:center;\">"+dayCounter +"<br>&nbsp;</div></html>");
+                label.setBackground(Color.WHITE);
+            }
+
+            panel.add(label);
         }
 
         counter += maxDay;

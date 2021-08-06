@@ -75,12 +75,12 @@ public class FrameView extends JFrame {
 		});
 
 		overviewPanel.setLayout(new BorderLayout());
-		overviewPanel.add(eventButtonPanel, BorderLayout.NORTH);
+		overviewPanel.add(eventButtonPanel, BorderLayout.PAGE_START);
 		overviewPanel.add(monthButtonPanel, BorderLayout.CENTER);
-		overviewPanel.add(miniCal.getView(), BorderLayout.SOUTH);
+		overviewPanel.add(miniCal.getView(), BorderLayout.PAGE_END);
 
 		eventViewPanel.setLayout(new BorderLayout());
-		eventViewPanel.add(viewButtonPanel, BorderLayout.NORTH);
+		eventViewPanel.add(viewButtonPanel, BorderLayout.PAGE_START);
 		eventViewPanel.add(viewPanel, BorderLayout.CENTER);
 
 		this.setLayout(new FlowLayout());
