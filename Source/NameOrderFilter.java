@@ -2,15 +2,24 @@
  *	@(#)NameOrderFilter.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/17
+ *	@version 1.00 2021/8/5
 **/
 
-public class NameOrderFilter implements EventFilter {
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class NameOrderFilter extends EventFilter {
 	public String getName() {
 		return "order by name";
 	}
 
 	public Event[] filter(Event[] events) {
-		return null;
+		List<Event> filtered = Arrays.asList(events).stream()
+			.sorted(Comparator.comparing(Event::getName))
+			.collect(Collectors.toList());
+
+		return filtered.toArray(new Event[filtered.size()]);
 	}
 }

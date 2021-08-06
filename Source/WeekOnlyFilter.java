@@ -2,7 +2,7 @@
  *	@(#)WeekOnlyFilter.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/30
+ *	@version 1.00 2021/8/5
 **/
 
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class WeekOnlyFilter implements EventFilter {
+public class WeekOnlyFilter extends EventFilter {
 	private final Predicate<Event> su, mo, tu, we, th, fr, sa;
 
 	public WeekOnlyFilter(LocalDate date) {
@@ -33,7 +33,6 @@ public class WeekOnlyFilter implements EventFilter {
 		List<Event> filtered = Arrays.asList(events).stream()
 			.filter(su.or(mo).or(tu).or(we).or(th).or(fr).or(sa)).collect(Collectors.toList());
 
-		Event[] results = new Event[filtered.size()];
-		return filtered.toArray(results);
+		return filtered.toArray(new Event[filtered.size()]);
 	}
 }

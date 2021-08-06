@@ -2,7 +2,7 @@
  *	@(#)DayOnlyFilter.java
  *
  *	@author Yorick van de Water
- *	@version 1.00 2021/7/30
+ *	@version 1.00 2021/8/5
 **/
 
 import java.time.LocalDate;
@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DayOnlyFilter implements EventFilter {
+public class DayOnlyFilter extends EventFilter {
 	private final LocalDate date;
 
 	public DayOnlyFilter(LocalDate date) {
@@ -25,7 +25,6 @@ public class DayOnlyFilter implements EventFilter {
 		List<Event> filtered = Arrays.asList(events).stream()
 			.filter(e -> e.occursOn(date)).collect(Collectors.toList());
 
-		Event[] results = new Event[filtered.size()];
-		return filtered.toArray(results);
+		return filtered.toArray(new Event[filtered.size()]);
 	}
 }

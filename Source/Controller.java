@@ -17,15 +17,11 @@ public class Controller {
 		this.model = model;
 		this.frame = frame;
 		this.filters = new EventFilter[] {
-			new NameOrderFilter(), new OneTimeOnlyFilter(), new RecurringOnlyFilter()
+			new TimeOrderFilter(), new NameOrderFilter(), new OneTimeOnlyFilter(), new RecurringOnlyFilter()
 		};
 
-		String[] filterNames = new String[this.filters.length];
-		for (int a = 0; a < this.filters.length; ++a) {
-			filterNames[a] = this.filters[a].getName();
-		}
 		if (frame != null) {
-			frame.setFilters(filterNames);
+			frame.setFilters(this.filters);
 		}
 	}
 

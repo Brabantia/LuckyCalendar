@@ -157,7 +157,7 @@ public class FrameView extends JFrame {
 		super.setVisible(true);
 	}
 
-	public void setFilters(String... filters) {
+	public void setFilters(EventFilter... filters) {
 		this.agenda.setFilters(filters);
 	}
 
